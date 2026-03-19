@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create venv",
+      "type": "shell",
+      "command": "py -3 -m venv .venv"
+    },
+    {
+      "label": "Install requirements",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt"
+    },
+    {
+      "label": "Run sample_basic.py",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\python.exe sample_basic.py"
+    },
+    {
+      "label": "Run verify_receive.py",
+      "type": "shell",
+      "command": ".\\.venv\\Scripts\\python.exe verify_receive.py --fields time q tcp runtime"
+    }
+  ]
+}
