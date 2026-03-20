@@ -14,7 +14,7 @@ A Windows-friendly **reference program** for Universal Robots RTDE.
 
 ## 📚 Documentation
 
-👉 https://shh444.github.io/ur-rtde/gi
+👉 https://shh444.github.io/ur-rtde/
 
 ---
 
