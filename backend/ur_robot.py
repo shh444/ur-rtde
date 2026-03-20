@@ -29,6 +29,7 @@ __all__ = [
     "URRobot",
     "UR_RTDE",
     "expand_fields",
+    "expand_output_fields",
     "normalize_token",
     "rad_to_deg",
     "rotvec_to_rpy",
@@ -60,6 +61,7 @@ FIELD_ALIASES: Dict[str, str] = {
     "ai0": "standard_analog_input0",
     "ai1": "standard_analog_input1",
     "speed": "speed_scaling",
+    "target_speed": "target_speed_fraction",
     "runtime": "runtime_state",
     "mode": "robot_mode",
     "safety": "safety_mode",
@@ -84,6 +86,9 @@ _FIELD_UNITS: Dict[str, Any] = {
     "standard_analog_input0": "mA or V",
     "standard_analog_input1": "mA or V",
     "speed_scaling": "ratio",
+    "target_speed_fraction": "ratio",
+    "speed_slider_mask": "uint32 mask",
+    "speed_slider_fraction": "ratio",
     "runtime_state": "enum",
     "robot_mode": "enum",
     "safety_mode": "enum",
@@ -91,6 +96,26 @@ _FIELD_UNITS: Dict[str, Any] = {
 
 _GP_IN_RE = re.compile(r"^gp(?:\.in)?\.(bit|int|double)\.(\d+)$")
 _GP_OUT_RE = re.compile(r"^(?:gp_out|gpo|gp\.out)\.(bit|int|double)\.(\d+)$")
+
+# Controller input fields that are writable through RTDE but should not be
+# mirrored into the output recipe automatically. GP input registers can be
+# mirrored because UR exposes matching output fields for them.
+_KNOWN_RTDE_INPUT_FIELDS = {
+    "speed_slider_mask",
+    "speed_slider_fraction",
+}
+
+
+def _is_gp_input_field_name(field_name: str) -> bool:
+    return field_name.startswith("input_bit_register_") or field_name.startswith("input_int_register_") or field_name.startswith("input_double_register_")
+
+
+def _is_rtde_input_field_name(field_name: str) -> bool:
+    return field_name in _KNOWN_RTDE_INPUT_FIELDS or _is_gp_input_field_name(field_name)
+
+
+def _supports_output_readback(field_name: str) -> bool:
+    return _is_gp_input_field_name(field_name)
 
 
 @dataclass(frozen=True)
@@ -193,11 +218,15 @@ def _gp_field(direction: str, kind: str, index: int) -> str:
     return f"output_{kind}_register_{value}"
 
 
-def _is_gp_input_token(token: str) -> bool:
+def _is_rtde_input_token(token: str) -> bool:
     value = str(token).strip()
     if _GP_IN_RE.fullmatch(value) is not None:
         return True
-    return value.startswith("input_bit_register_") or value.startswith("input_int_register_") or value.startswith("input_double_register_")
+    try:
+        normalized = normalize_token(value)
+    except Exception:
+        return False
+    return _is_rtde_input_field_name(normalized)
 
 
 def normalize_token(token: str) -> str:
@@ -224,6 +253,16 @@ def normalize_token(token: str) -> str:
 
 def expand_fields(tokens: Sequence[str]) -> List[str]:
     return _dedupe(normalize_token(token) for token in tokens)
+
+
+def expand_output_fields(tokens: Sequence[str]) -> List[str]:
+    normalized = []
+    for token in tokens:
+        key = normalize_token(token)
+        if _is_rtde_input_field_name(key):
+            continue
+        normalized.append(key)
+    return _dedupe(normalized)
 
 
 def _as_float_tuple(values: Sequence[Any]) -> Tuple[float, ...]:
@@ -307,10 +346,11 @@ class URRobot:
 
         self._field_tokens = list(fields or DEFAULT_FIELDS)
         self._write_tokens = list(writes or [])
-        self._requested_outputs = expand_fields(self._field_tokens)
+        self._requested_outputs = expand_output_fields(self._field_tokens)
         self._requested_inputs = expand_fields(self._write_tokens)
         if self.readback_writes and self._requested_inputs:
-            self._requested_outputs = _dedupe([*self._requested_outputs, *self._requested_inputs])
+            readable_inputs = [name for name in self._requested_inputs if _supports_output_readback(name)]
+            self._requested_outputs = _dedupe([*self._requested_outputs, *readable_inputs])
         if not self._requested_outputs:
             raise ValueError("fields must contain at least one item")
 
@@ -405,10 +445,11 @@ class URRobot:
             if writes is not None:
                 self._write_tokens = list(writes)
 
-            requested_outputs = expand_fields(self._field_tokens)
+            requested_outputs = expand_output_fields(self._field_tokens)
             requested_inputs = expand_fields(self._write_tokens)
             if self.readback_writes and requested_inputs:
-                requested_outputs = _dedupe([*requested_outputs, *requested_inputs])
+                readable_inputs = [name for name in requested_inputs if _supports_output_readback(name)]
+                requested_outputs = _dedupe([*requested_outputs, *readable_inputs])
             if not requested_outputs:
                 raise ValueError("fields must contain at least one item")
 
@@ -632,20 +673,63 @@ class URRobot:
             return default
         raise AttributeError(f"field {name!r} is not selected")
 
-    def write(self, name: str, value: Any) -> None:
-        key = normalize_token(name)
-        if key not in self._input_fields:
-            raise RTDEError(f"field {name!r} is not writable; add it to FIELD=[...] or writes=[...]")
+    def write_many(self, values: Dict[str, Any], *, flush: Optional[bool] = None) -> None:
+        if not values:
+            return
         if not self._connected:
             self.connect()
         if self._input_recipe_id is None:
             raise RTDEError("input recipe is not configured")
-        index = self._input_fields.index(key)
-        type_name = self._input_types[index]
-        self._input_cache[key] = self._coerce_value(type_name, value)
-        self._pending_write_fields.add(key)
-        if self._streaming:
+
+        for raw_name, raw_value in values.items():
+            key = normalize_token(raw_name)
+            if key not in self._input_fields:
+                raise RTDEError(f"field {raw_name!r} is not writable; add it to FIELD=[...] or writes=[...]")
+            index = self._input_fields.index(key)
+            type_name = self._input_types[index]
+            self._input_cache[key] = self._coerce_value(type_name, raw_value)
+            self._pending_write_fields.add(key)
+
+        should_flush = self._streaming if flush is None else bool(flush)
+        if should_flush:
             self._flush_input_cache()
+
+    def write(self, name: str, value: Any) -> None:
+        self.write_many({name: value})
+
+    def set_speed_slider(
+        self,
+        fraction: float,
+        *,
+        settle_s: float = 0.10,
+        release_mask: bool = True,
+    ) -> float:
+        value = max(0.0, min(1.0, float(fraction)))
+        if "speed_slider_mask" not in self._requested_inputs or "speed_slider_fraction" not in self._requested_inputs:
+            raise RTDEError(
+                'speed slider inputs are not configured; add "speed_slider_mask" and "speed_slider_fraction" to FIELD=[...]'
+            )
+
+        self.write_many({
+            "speed_slider_fraction": value,
+            "speed_slider_mask": 1,
+        }, flush=True)
+
+        if settle_s > 0.0:
+            time.sleep(float(settle_s))
+
+        if release_mask:
+            self.write_many({"speed_slider_mask": 0}, flush=True)
+
+        return value
+
+    def speed_slider_state(self) -> Dict[str, Any]:
+        return {
+            "speed_slider_mask": self.read("speed_slider_mask", 0),
+            "speed_slider_fraction": self.read("speed_slider_fraction", 0.0),
+            "speed_scaling": self.read("speed_scaling", None),
+            "target_speed_fraction": self.read("target_speed_fraction", None),
+        }
 
     def q_deg(self) -> Tuple[float, ...]:
         return _as_float_tuple(rad_to_deg(self.read("q")))
@@ -1052,7 +1136,7 @@ class UR_RTDE(URRobot):
         READBACK_WRITES: bool = True,
     ):
         selected = list(FIELD or DEFAULT_FIELDS)
-        auto_writes = [token for token in selected if _is_gp_input_token(token)]
+        auto_writes = [token for token in selected if _is_rtde_input_token(token)]
         super().__init__(
             host=HOST,
             frequency_hz=FREQUENCY_HZ,
