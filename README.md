@@ -10,13 +10,13 @@ A Windows-friendly **reference program** for Universal Robots RTDE.
 > 이 저장소는 점검, 연동, 학습, 검증을 위한 **참고 프로그램**입니다.
 > 인증된 안전 제품이 아니며, 단독 보호 수단으로 사용하면 안 됩니다.
 
-## Language / 언어
+---
 
-- English docs: `docs/source/en/index.rst`
-- Korean docs: `docs/source/ko/index.rst`
-- Sphinx HTML entry: `docs/build/html/index.html`
-- English-only HTML entry: `docs/build/html/en/index.html`
-- Korean-only HTML entry: `docs/build/html/ko/index.html`
+## 📚 Documentation
+
+👉 https://shh444.github.io/ur-rtde/
+
+---
 
 ## Screenshots
 
