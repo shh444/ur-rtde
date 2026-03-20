@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Troubleshooting &#8212; UR RTDE Dashboard Studio</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=cc97f89b" />
+    <script src="_static/documentation_options.js?v=a754ae57"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Publishing with Sphinx and GitHub Pages" href="github_pages.html" />
+    <link rel="prev" title="Python API" href="python_api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h1>
+<section id="unsupported-rtde-fields">
+<h2>Unsupported RTDE fields<a class="headerlink" href="#unsupported-rtde-fields" title="Link to this heading">¶</a></h2>
+<p>Error example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RTDE output setup contains unsupported fields: actual_current_as_torque:NOT_FOUND
+</pre></div>
+</div>
+<p>Meaning:</p>
+<p>The controller does not support one or more requested output fields.</p>
+<p>Recommended fix order:</p>
+<ol class="arabic simple">
+<li><p>Remove the unsupported field.</p></li>
+<li><p>Test again with a known-good slim recipe.</p></li>
+<li><p>Add fields back one by one.</p></li>
+</ol>
+<p>Known-good slim recipe:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ROBOT_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_q&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="start-rejected">
+<h2>Start rejected<a class="headerlink" href="#start-rejected" title="Link to this heading">¶</a></h2>
+<p>Error example:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RTDEError: RTDE start rejected
+</pre></div>
+</div>
+<p>Typical causes:</p>
+<ul class="simple">
+<li><p>invalid or unsupported recipe,</p></li>
+<li><p>frequency too ambitious for the selected field set,</p></li>
+<li><p>security/service access issue,</p></li>
+<li><p>controller-side resource pressure.</p></li>
+</ul>
+<p>Practical fix order:</p>
+<ol class="arabic simple">
+<li><p>Reduce to <code class="docutils literal notranslate"><span class="pre">125.0</span></code> Hz.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>, <code class="docutils literal notranslate"><span class="pre">actual_q</span></code>, <code class="docutils literal notranslate"><span class="pre">actual_TCP_pose</span></code> only.</p></li>
+<li><p>Re-add extra fields one by one.</p></li>
+</ol>
+</section>
+<section id="actual-rate-drops-over-time">
+<h2>Actual rate drops over time<a class="headerlink" href="#actual-rate-drops-over-time" title="Link to this heading">¶</a></h2>
+<p>Common causes:</p>
+<ul class="simple">
+<li><p>too many fields at once,</p></li>
+<li><p>a 500 Hz recipe used for a full monitoring dashboard,</p></li>
+<li><p>charting and rendering load,</p></li>
+<li><p>controller-side packet skipping under load.</p></li>
+</ul>
+<p>Practical fix:</p>
+<ul class="simple">
+<li><p>keep 500 Hz for the thinnest possible recipe,</p></li>
+<li><p>run richer monitoring at 125 Hz,</p></li>
+<li><p>separate the high-rate twin profile from the diagnostics profile.</p></li>
+</ul>
+</section>
+<section id="gp-write-does-not-work">
+<h2>GP write does not work<a class="headerlink" href="#gp-write-does-not-work" title="Link to this heading">¶</a></h2>
+<p>Check all of these:</p>
+<ul class="simple">
+<li><p>are you writing to an <code class="docutils literal notranslate"><span class="pre">input_*</span></code> register rather than an <code class="docutils literal notranslate"><span class="pre">output_*</span></code> register?</p></li>
+<li><p>is another RTDE client already controlling that same input variable?</p></li>
+<li><p>is the field included in the active setup?</p></li>
+</ul>
+</section>
+<section id="digital-twin-visible-but-links-are-misaligned">
+<h2>Digital twin visible but links are misaligned<a class="headerlink" href="#digital-twin-visible-but-links-are-misaligned" title="Link to this heading">¶</a></h2>
+<p>If the robot is visible but links appear connected in the wrong order, the most likely cause is a transform mismatch between imported mesh origins and the joint origin chain. Update only the front-end mesh loader and force a hard refresh in the browser.</p>
+</section>
+<section id="digital-twin-not-visible">
+<h2>Digital twin not visible<a class="headerlink" href="#digital-twin-not-visible" title="Link to this heading">¶</a></h2>
+<p>Check the browser-side 3D debug log first. Useful indicators include:</p>
+<ul class="simple">
+<li><p>which mesh files were loaded,</p></li>
+<li><p>applied scale,</p></li>
+<li><p>bounding box size,</p></li>
+<li><p>fallback state.</p></li>
+</ul>
+<p>Hard refresh after front-end changes:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Ctrl + F5
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">UR RTDE Dashboard Studio</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rtde_background.html">RTDE background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dashboard_guide.html">Dashboard guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unsupported-rtde-fields">Unsupported RTDE fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-rejected">Start rejected</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#actual-rate-drops-over-time">Actual rate drops over time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gp-write-does-not-work">GP write does not work</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#digital-twin-visible-but-links-are-misaligned">Digital twin visible but links are misaligned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#digital-twin-not-visible">Digital twin not visible</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="github_pages.html">Publishing with Sphinx and GitHub Pages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="python_api.html" title="previous chapter">Python API</a></li>
+      <li>Next: <a href="github_pages.html" title="next chapter">Publishing with Sphinx and GitHub Pages</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/troubleshooting.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

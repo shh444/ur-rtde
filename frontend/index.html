@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UR RTDE Dashboard Studio</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="eyebrow">Universal Robots</div>
+          <h1>RTDE Dashboard Studio</h1>
+          <p>Split backend and frontend, real RTDE field names, clear GP input and output separation, and a mesh-ready 3D digital twin.</p>
+        </div>
+
+        <section class="panel compact">
+          <div class="panel-header">
+            <h2>Connection</h2>
+            <span id="stateBadge" class="badge neutral">stopped</span>
+          </div>
+          <form id="configForm" class="stack gap-12">
+            <div class="field">
+              <span>Robot IP</span>
+              <div id="fixedRobotHost" class="static-value">Loading from app_config.py...</div>
+              <div class="hint">Change the robot IP only in <code>app_config.py</code>. High RTDE frequency works best with a slim field list.</div>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Frequency [Hz]</span>
+                <input id="frequencyInput" type="number" min="1" step="1" />
+              </label>
+              <label class="field">
+                <span>Robot model</span>
+                <select id="robotModelSelect"></select>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>History [s]</span>
+                <input id="historySecondsInput" type="number" min="5" step="5" />
+              </label>
+              <label class="field">
+                <span>Chart sample [Hz]</span>
+                <input id="historySampleHzInput" type="number" min="1" step="1" />
+              </label>
+            </div>
+            <div>
+              <div class="field-label-row">
+                <span>Fields</span>
+                <button id="clearFieldsBtn" type="button" class="text-button">clear</button>
+              </div>
+              <textarea id="fieldsInput" rows="8" placeholder="timestamp
+actual_q
+actual_TCP_pose
+runtime_state"></textarea>
+              <div class="hint">Use the real UR RTDE field names. The digital twin needs <code>actual_q</code>. TCP overlay and TCP trail need <code>actual_TCP_pose</code>. GP <code>input_*</code> fields are writable. GP <code>output_*</code> fields are read only.</div>
+            </div>
+            <div>
+              <div class="field-label-row">
+                <span>Preset</span>
+              </div>
+              <div id="presetButtons" class="chip-row"></div>
+            </div>
+            <div class="stack gap-12">
+              <div>
+                <div class="field-label-row"><span>Quick add - Robot outputs</span></div>
+                <div id="fieldChipsOutputs" class="chip-row"></div>
+              </div>
+              <div>
+                <div class="field-label-row"><span>Quick add - GP inputs (R/W)</span></div>
+                <div id="fieldChipsGpInputs" class="chip-row"></div>
+              </div>
+              <div>
+                <div class="field-label-row"><span>Quick add - GP outputs (R)</span></div>
+                <div id="fieldChipsGpOutputs" class="chip-row"></div>
+              </div>
+            </div>
+            <div class="button-grid">
+              <button id="startBtn" type="button" class="primary">Start</button>
+              <button id="stopBtn" type="button">Stop</button>
+              <button id="restartBtn" type="button">Restart</button>
+              <button type="submit">Apply</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel compact">
+          <div class="panel-header">
+            <h2>GP Write</h2>
+            <span class="badge subtle">input register</span>
+          </div>
+          <form id="writeForm" class="stack gap-12">
+            <label class="field">
+              <span>Field</span>
+              <select id="writeFieldSelect"></select>
+            </label>
+            <label class="field">
+              <span>Value</span>
+              <input id="writeValueInput" type="text" placeholder="33 / 12.5 / true" />
+            </label>
+            <button type="submit">Write</button>
+          </form>
+        </section>
+
+        <section class="panel compact">
+          <div class="panel-header">
+            <h2>Recording and export</h2>
+          </div>
+          <div class="button-grid two">
+            <button id="recordStartBtn" type="button">Start CSV</button>
+            <button id="recordStopBtn" type="button">Stop CSV</button>
+          </div>
+          <div class="button-grid two top-gap">
+            <button id="exportSnapshotBtn" type="button">Snapshot JSON</button>
+            <a id="downloadRecordingLink" class="button-like disabled" href="#" target="_blank" rel="noopener">Download CSV</a>
+          </div>
+          <a id="downloadSnapshotLink" class="inline-link hidden" href="#" target="_blank" rel="noopener">Download latest snapshot</a>
+          <div id="recordingSummary" class="hint top-gap"></div>
+        </section>
+
+        <section class="panel compact grow">
+          <div class="panel-header">
+            <h2>Event log</h2>
+          </div>
+          <div id="eventsList" class="event-list"></div>
+        </section>
+      </aside>
+
+      <main class="content">
+        <section class="status-grid seven">
+          <article class="stat-card"><span>Host</span><strong id="statHost">-</strong></article>
+          <article class="stat-card"><span>Requested</span><strong id="statHz">-</strong></article>
+          <article class="stat-card"><span>RTDE read</span><strong id="statActualHz">-</strong></article>
+          <article class="stat-card"><span>Dashboard consume</span><strong id="statConsumerHz">-</strong></article>
+          <article class="stat-card"><span>Consumer skips</span><strong id="statSkipped">-</strong></article>
+          <article class="stat-card"><span>Age</span><strong id="statAge">-</strong></article>
+          <article class="stat-card"><span>Controller</span><strong id="statController">-</strong></article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Live values</h2>
+            <div class="panel-actions">
+              <input id="valueSearchInput" class="search-input" type="search" placeholder="field search" />
+              <button id="copyJsonBtn" type="button">Copy JSON</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>RTDE name</th>
+                  <th>Value</th>
+                  <th>Unit</th>
+                  <th>Access</th>
+                  <th>Direction</th>
+                </tr>
+              </thead>
+              <tbody id="liveTableBody"></tbody>
+            </table>
+          </div>
+          <div id="errorBanner" class="error-banner hidden"></div>
+        </section>
+
+        <section class="panel twin-panel">
+          <div class="panel-header">
+            <h2>3D Digital Twin</h2>
+            <div class="panel-actions twin-actions">
+              <button id="twinIsoBtn" type="button">Iso</button>
+              <button id="twinFrontBtn" type="button">Front</button>
+              <button id="twinSideBtn" type="button">Side</button>
+              <button id="twinTopBtn" type="button">Top</button>
+              <button id="twinResetBtn" type="button">Reset</button>
+            </div>
+          </div>
+          <div class="twin-layout">
+            <div class="twin-stage-wrap">
+              <div id="twinCanvas" class="twin-canvas"></div>
+              <div class="twin-overlay-row">
+                <span id="twinModelLabel" class="badge subtle">UR5e</span>
+                <span id="twinStatusLabel" class="badge neutral">waiting</span>
+              </div>
+            </div>
+            <aside class="twin-side">
+              <div class="toggle-row">
+                <label><input id="twinTrailToggle" type="checkbox" checked /> TCP trail</label>
+                <label><input id="twinFreezeToggle" type="checkbox" /> Freeze pose</label>
+              </div>
+              <div id="twinWarning" class="hint">Green = model TCP, cyan = actual TCP overlay.</div>
+              <div class="twin-metric-grid">
+                <article class="mini-stat"><span>FK vs actual</span><strong id="twinDelta">-</strong></article>
+                <article class="mini-stat"><span>Status</span><strong id="twinToolStatus">-</strong></article>
+              </div>
+              <div class="twin-readout">
+                <h3>Actual TCP [mm / RPY deg]</h3>
+                <pre id="twinActualPose">-</pre>
+              </div>
+              <div class="twin-readout">
+                <h3>Model TCP [mm / RPY deg]</h3>
+                <pre id="twinFkPose">-</pre>
+              </div>
+              <div class="twin-readout">
+                <h3>Joint [deg]</h3>
+                <pre id="twinJointDeg">-</pre>
+              </div>
+              <div class="twin-readout">
+                <div class="field-label-row">
+                  <h3>3D Debug Log</h3>
+                  <button id="copyTwinDebugBtn" type="button" class="text-button">copy</button>
+                </div>
+                <pre id="twinDebugText">-</pre>
+              </div>
+              <div class="hint">The mesh twin uses the UR description model when assets are available. If the body is still missing, copy the 3D Debug Log and share it. Small TCP differences are still possible because a real robot also depends on its own calibration.</div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="chart-grid">
+          <article class="panel chart-panel"><div class="panel-header"><h2>Joint Position [deg]</h2></div><div id="chartJointDeg" class="chart"></div></article>
+          <article class="panel chart-panel"><div class="panel-header"><h2>Joint Velocity [deg/s]</h2></div><div id="chartJointVelDeg" class="chart"></div></article>
+          <article class="panel chart-panel"><div class="panel-header"><h2>Joint Current [A]</h2></div><div id="chartJointCurrent" class="chart"></div></article>
+          <article class="panel chart-panel span-two">
+            <div class="panel-header current-monitor-header">
+              <h2>Joint Current vs Allowed Window [A]</h2>
+              <div class="panel-actions current-monitor-actions">
+                <label class="inline-field">
+                  <span>Joint</span>
+                  <select id="currentJointSelect"></select>
+                </label>
+                <span id="currentMonitorState" class="badge neutral">unknown</span>
+                <span id="currentMonitorPeak" class="badge subtle">peak -</span>
+              </div>
+            </div>
+            <div id="chartCurrentWindow" class="chart chart-tall"></div>
+            <div id="currentMonitorNote" class="hint top-gap">Add target_current, actual_current, and actual_current_window for the full safety view.</div>
+            <div class="table-wrap top-gap compact-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Joint</th>
+                    <th>Actual [A]</th>
+                    <th>Target [A]</th>
+                    <th>Window [A]</th>
+                    <th>Deviation [A]</th>
+                    <th>Usage</th>
+                    <th>Torque [Nm]</th>
+                    <th>State</th>
+                  </tr>
+                </thead>
+                <tbody id="currentMonitorBody"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="panel chart-panel"><div class="panel-header"><h2>TCP Position [mm]</h2></div><div id="chartTcpPos" class="chart"></div></article>
+          <article class="panel chart-panel"><div class="panel-header"><h2>TCP Orientation [RPY deg]</h2></div><div id="chartTcpRpy" class="chart"></div></article>
+          <article class="panel chart-panel"><div class="panel-header"><h2>Speed Scaling / GP Numeric</h2></div><div id="chartAux" class="chart"></div></article>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="panel">
+            <div class="panel-header"><h2>Digital Inputs / Outputs</h2></div>
+            <div class="io-wrap">
+              <div>
+                <h3>DI 0..15</h3>
+                <div id="diBits" class="bit-grid"></div>
+              </div>
+              <div>
+                <h3>DO 0..15</h3>
+                <div id="doBits" class="bit-grid"></div>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><h2>Derived snapshot</h2></div>
+            <pre id="snapshotView" class="snapshot-view">{}</pre>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>
