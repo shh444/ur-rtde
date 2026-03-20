@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python API &mdash; RTDE Reference Program</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4448bc75" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a754ae57"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="문제 해결" href="troubleshooting.html" />
+    <link rel="prev" title="웹 인터페이스 가이드" href="dashboard_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RTDE Reference Program
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../en/index.html">RTDE Reference Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../en/index.html#screenshots">Screenshots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../en/index.html#quick-links">Quick links</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../en/getting_started.html">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/rtde_background.html">RTDE background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/dashboard_guide.html">Web interface guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/python_api.html">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/github_pages.html">Publishing with Sphinx and GitHub Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../en/api_reference.html">API reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">RTDE Reference Program</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#id1">스크린샷</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#id2">빠른 이동</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html">시작하기</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtde_background.html">RTDE 배경 설명</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dashboard_guide.html">웹 인터페이스 가이드</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="troubleshooting.html">문제 해결</a></li>
+<li class="toctree-l3"><a class="reference internal" href="github_pages.html">Sphinx 와 GitHub Pages 배포</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html">API 레퍼런스</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RTDE Reference Program</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">RTDE Reference Program</a></li>
+      <li class="breadcrumb-item active">Python API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ko/python_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-api">
+<h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h1>
+<div class="lang-switch">
+  <a href="../en/python_api.html">EN</a>
+  <span class="active">KO</span>
+</div><p>Python에서 이 저장소를 사용하는 대표적인 방법은 두 가지입니다.</p>
+<section id="ur-rtde">
+<h2>간단 래퍼: <code class="docutils literal notranslate"><span class="pre">UR_RTDE</span></code><a class="headerlink" href="#ur-rtde" title="Link to this heading"></a></h2>
+<p>작은 래퍼 클래스이며, 읽기 쉽고 실제 애플리케이션 코드에 복사해 넣기 쉬운 형태를 목표로 합니다.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">동기 <code class="docutils literal notranslate"><span class="pre">UR_RTDE</span></code> 예제</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ur_rtde_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">UR_RTDE</span>
+
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;192.168.163.128&quot;</span>
+<span class="n">FREQUENCY_HZ</span> <span class="o">=</span> <span class="mi">125</span>
+<span class="n">ROBOT_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;actual_q&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;input_int_register_24&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;output_int_register_24&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">robot</span> <span class="o">=</span> <span class="n">UR_RTDE</span><span class="p">(</span>
+        <span class="n">HOST</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span>
+        <span class="n">FREQUENCY_HZ</span><span class="o">=</span><span class="n">FREQUENCY_HZ</span><span class="p">,</span>
+        <span class="n">FIELD</span><span class="o">=</span><span class="n">ROBOT_FIELDS</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">robot</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actual_q [rad]        =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_q&quot;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actual_q [deg]        =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="o">.</span><span class="n">q_deg</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actual_TCP_pose       =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TCP xyz mm + RPY deg  =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy_deg</span><span class="p">())</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input_int_register_24 (before) =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_int_register_24&quot;</span><span class="p">])</span>
+        <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_int_register_24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">33</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input_int_register_24 (after)  =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_int_register_24&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s2">&quot;output_int_register_24&quot;</span> <span class="ow">in</span> <span class="n">ROBOT_FIELDS</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;output_int_register_24         =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="p">[</span><span class="s2">&quot;output_int_register_24&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">robot</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">robot</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="urrobot">
+<h2>코어 클래스: <code class="docutils literal notranslate"><span class="pre">URRobot</span></code><a class="headerlink" href="#urrobot" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">URRobot</span></code> 은 웹 인터페이스 내부에서도 사용하는 조금 더 명시적인 저수준 인터페이스입니다.</p>
+<p>생성 예시는 아래와 같습니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">backend.ur_robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">URRobot</span>
+
+<span class="n">robot</span> <span class="o">=</span> <span class="n">URRobot</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;192.168.163.128&quot;</span><span class="p">,</span>
+    <span class="n">frequency_hz</span><span class="o">=</span><span class="mf">125.0</span><span class="p">,</span>
+    <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_q&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h2>비동기 예제<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">비동기 <code class="docutils literal notranslate"><span class="pre">URRobot</span></code> 예제</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">backend.ur_robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">URRobot</span>
+
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;192.168.163.128&quot;</span>
+<span class="n">FREQUENCY_HZ</span> <span class="o">=</span> <span class="mf">125.0</span>
+<span class="n">ROBOT_FIELDS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;actual_q&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">robot</span> <span class="o">=</span> <span class="n">URRobot</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span>
+        <span class="n">frequency_hz</span><span class="o">=</span><span class="n">FREQUENCY_HZ</span><span class="p">,</span>
+        <span class="n">fields</span><span class="o">=</span><span class="n">ROBOT_FIELDS</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">robot</span><span class="o">.</span><span class="n">start_async</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="k">await</span> <span class="n">robot</span><span class="o">.</span><span class="n">wait_next_frame_async</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;frame index           =&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">frame_index</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actual_q [rad]        =&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="p">[</span><span class="s2">&quot;actual_q&quot;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;actual_q [deg]        =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="o">.</span><span class="n">q_deg</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TCP xyz mm + RPY deg  =&quot;</span><span class="p">,</span> <span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy_deg</span><span class="p">())</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">robot</span><span class="o">.</span><span class="n">stop_async</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">robot</span><span class="o">.</span><span class="n">close_async</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id2">
+<h2>값 읽기<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>두 API 모두 최신 캐시값을 필드명으로 바로 읽을 수 있습니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_q&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="gp-input">
+<h2>GP input 쓰기<a class="headerlink" href="#gp-input" title="Link to this heading"></a></h2>
+<p>쓰기 대상은 <code class="docutils literal notranslate"><span class="pre">input_*_register_*</span></code> 필드만 사용하세요.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_int_register_24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">33</span>
+<span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_double_register_24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.5</span>
+<span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_bit_register_64&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="helper">
+<h2>변환 helper<a class="headerlink" href="#helper" title="Link to this heading"></a></h2>
+<p>표시와 디버깅에 유용한 helper 예시입니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">q_deg</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_mm</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_mm_deg</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy_deg</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>권장 연동 패턴<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>조금 더 큰 애플리케이션에서는 다음 패턴을 권장합니다.</p>
+<ul class="simple">
+<li><p>로봇 연결당 robot 객체 하나 유지</p></li>
+<li><p>필요한 최소 필드 조합만 선택</p></li>
+<li><p>웹 인터페이스는 점검용으로 사용</p></li>
+<li><p>Python API는 자동화와 로깅에 사용</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dashboard_guide.html" class="btn btn-neutral float-left" title="웹 인터페이스 가이드" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="문제 해결" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

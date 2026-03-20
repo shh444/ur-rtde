@@ -1,181 +1,168 @@
+
+
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html lang="en" data-content_root="./">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RTDE Reference Program &mdash; RTDE Reference Program</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=4448bc75" />
 
-    <title>UR RTDE Dashboard Studio &#8212; UR RTDE Dashboard Studio</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=cc97f89b" />
-    <script src="_static/documentation_options.js?v=a754ae57"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=a754ae57"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Getting started" href="getting_started.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
+    <link rel="next" title="RTDE Reference Program" href="en/index.html" /> 
+</head>
 
-  
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-  </head><body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
-
-          <div class="body" role="main">
-            
-  <section id="ur-rtde-dashboard-studio">
-<h1>UR RTDE Dashboard Studio<a class="headerlink" href="#ur-rtde-dashboard-studio" title="Link to this heading">¶</a></h1>
-<p>A combined Universal Robots RTDE dashboard and Python API workspace.</p>
-<p>The documentation is split into:</p>
-<ul class="simple">
-<li><p>a practical dashboard guide,</p></li>
-<li><p>a separate Python API guide,</p></li>
-<li><p>RTDE background and naming rules,</p></li>
-<li><p>troubleshooting notes,</p></li>
-<li><p>and a GitHub Pages deployment guide for Sphinx.</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#windows-setup">Windows setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#single-source-configuration">Single-source configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#recommended-starting-points">Recommended starting points</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="rtde_background.html">RTDE background</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#what-rtde-is">What RTDE is</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#why-field-names-are-kept-literal">Why field names are kept literal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#output-recipe-vs-input-recipe">Output recipe vs input recipe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#gp-inputs-vs-gp-outputs">GP inputs vs GP outputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#frequency-and-load">Frequency and load</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rtde_background.html#current-window-safety-view">Current-window safety view</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dashboard_guide.html">Dashboard guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dashboard_guide.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dashboard_guide.html#how-to-run-it">How to run it</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dashboard_guide.html#key-panels">Key panels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dashboard_guide.html#recommended-field-profiles">Recommended field profiles</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#simple-wrapper-ur-rtde">Simple wrapper: <code class="docutils literal notranslate"><span class="pre">UR_RTDE</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#core-class-urrobot">Core class: <code class="docutils literal notranslate"><span class="pre">URRobot</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#async-example">Async example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#reading-values">Reading values</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#writing-gp-inputs">Writing GP inputs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#conversion-helpers">Conversion helpers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="python_api.html#suggested-integration-pattern">Suggested integration pattern</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#unsupported-rtde-fields">Unsupported RTDE fields</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#start-rejected">Start rejected</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#actual-rate-drops-over-time">Actual rate drops over time</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#gp-write-does-not-work">GP write does not work</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#digital-twin-visible-but-links-are-misaligned">Digital twin visible but links are misaligned</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#digital-twin-not-visible">Digital twin not visible</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="github_pages.html">Publishing with Sphinx and GitHub Pages</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="github_pages.html#local-html-build">Local HTML build</a></li>
-<li class="toctree-l2"><a class="reference internal" href="github_pages.html#repository-workflow">Repository workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="github_pages.html#required-github-repository-setting">Required GitHub repository setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="github_pages.html#minimal-command-summary">Minimal command summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="github_pages.html#what-to-commit">What to commit</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#module-ur_rtde_api">Wrapper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#module-backend.ur_robot">Core RTDE module</a></li>
-</ul>
-</li>
-</ul>
+          
+          <a href="#" class="icon icon-home">
+            RTDE Reference Program
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="en/index.html">RTDE Reference Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="en/index.html#screenshots">Screenshots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="en/index.html#quick-links">Quick links</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="en/getting_started.html">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/rtde_background.html">RTDE background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/dashboard_guide.html">Web interface guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/python_api.html">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/github_pages.html">Publishing with Sphinx and GitHub Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/api_reference.html">API reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ko/index.html">RTDE Reference Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ko/index.html#id1">스크린샷</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ko/index.html#id2">빠른 이동</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ko/getting_started.html">시작하기</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/rtde_background.html">RTDE 배경 설명</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/dashboard_guide.html">웹 인터페이스 가이드</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/python_api.html">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/troubleshooting.html">문제 해결</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/github_pages.html">Sphinx 와 GitHub Pages 배포</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ko/api_reference.html">API 레퍼런스</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">RTDE Reference Program</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RTDE Reference Program</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rtde-reference-program">
+<h1>RTDE Reference Program<a class="headerlink" href="#rtde-reference-program" title="Link to this heading"></a></h1>
+<div class="hero-panel">
+  <div class="hero-title">RTDE Reference Program</div>
+  <p class="hero-subtitle">
+    Reference documentation for the dashboard, digital twin, current-window monitoring,
+    and Python RTDE access.
+  </p>
+  <div class="reference-note">
+    <strong>Reference program notice.</strong>
+    This repository is intended for inspection, integration, learning, and validation.
+    It is not a certified safety product.
+  </div>
+</div><section id="choose-language">
+<h2>Choose language<a class="headerlink" href="#choose-language" title="Link to this heading"></a></h2>
+<div class="language-landing single-row">
+  <a class="language-card" href="en/index.html">
+    <strong>English</strong>
+    <span>Open the English-only documentation.</span>
+  </a>
+  <a class="language-card" href="ko/index.html">
+    <strong>한국어</strong>
+    <span>한국어 전용 문서를 엽니다.</span>
+  </a>
+</div></section>
+<section id="screenshots">
+<h2>Screenshots<a class="headerlink" href="#screenshots" title="Link to this heading"></a></h2>
+<div class="screenshot-grid">
+  <figure class="screenshot-card">
+    <img src="_static/screenshots/digital_twin.png" alt="Digital twin view" />
+    <figcaption>Digital twin view</figcaption>
+  </figure>
+  <figure class="screenshot-card">
+    <img src="_static/screenshots/current_window.png" alt="Current window view" />
+    <figcaption>Current window monitor</figcaption>
+  </figure>
+</div><div class="toctree-wrapper compound">
+</div>
+</section>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="en/index.html" class="btn btn-neutral float-right" title="RTDE Reference Program" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="Main">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">UR RTDE Dashboard Studio</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-
-<search id="searchbox" style="display: none" role="search">
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
-<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rtde_background.html">RTDE background</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dashboard_guide.html">Dashboard guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="python_api.html">Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="github_pages.html">Publishing with Sphinx and GitHub Pages</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="getting_started.html" title="next chapter">Getting started</a></li>
-  </ul></li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &#169;.
-      
-      |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

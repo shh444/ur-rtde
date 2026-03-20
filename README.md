@@ -1,140 +1,76 @@
-# UR RTDE Dashboard Studio
+# RTDE Reference Program (EN/KR)
 
-A Windows-friendly Universal Robots RTDE dashboard and Python API workspace with a split `backend/` and `frontend/` layout.
+A Windows-friendly **reference program** for Universal Robots RTDE.
 
-This repository has two equally important use cases:
+> [!IMPORTANT]
+> This repository is a **reference program** for inspection, integration, learning, and validation.
+> It is **not** a certified safety product and must not be used as the only protective measure.
 
-1. **Web dashboard mode** for live monitoring, digital twin visualization, GP register writes, recording, and quick inspection.
-2. **Python API mode** for scripts, test benches, logging tools, and application integration.
+> [!IMPORTANT]
+> 이 저장소는 점검, 연동, 학습, 검증을 위한 **참고 프로그램**입니다.
+> 인증된 안전 제품이 아니며, 단독 보호 수단으로 사용하면 안 됩니다.
 
-The project intentionally keeps the RTDE field names close to the real Universal Robots names so that the dashboard, the Python API, and the official RTDE documentation line up naturally.
+## Language / 언어
+
+- English docs: `docs/source/en/index.rst`
+- Korean docs: `docs/source/ko/index.rst`
+- Sphinx HTML entry: `docs/build/html/index.html`
+- English-only HTML entry: `docs/build/html/en/index.html`
+- Korean-only HTML entry: `docs/build/html/ko/index.html`
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/source/_static/screenshots/digital_twin.png" alt="Digital twin view" width="48%" />
+  <img src="docs/source/_static/screenshots/current_window.png" alt="Joint current versus allowed window" width="48%" />
+</p>
 
 ---
 
-## What this project is
+## EN
 
-- A **receive-focused RTDE client** with optional General Purpose register writes.
-- A **browser dashboard** built with FastAPI, WebSocket streaming, ECharts, and a three.js digital twin.
-- A **small Python class API** that can be used directly from scripts without touching the dashboard.
-- A **single-source configuration** workflow: the robot IP and default fields live in one place.
+### What this repository is for
 
----
+This repository helps you do three things with less friction:
 
-## Main features
+1. inspect robot state in a browser,
+2. read and write RTDE data from Python,
+3. publish internal guidance with Sphinx + GitHub Pages.
 
-- Split `backend/` and `frontend/` folder structure
-- English-only dashboard UI
-- Single-source robot IP configuration in `app_config.py`
-- Real RTDE field names such as `timestamp`, `actual_q`, `actual_TCP_pose`, and `input_int_register_24`
-- Mesh-based digital twin with fallback procedural rendering
-- Live tables, live charts, CSV recording, JSON export, and event logging
-- Current-window monitoring using `target_current`, `actual_current`, and `actual_current_window`
-- Simple Python API wrapper: `UR_RTDE`
-- Async-friendly core class: `URRobot`
-- Sphinx documentation under `docs/`
+The project intentionally keeps the RTDE field names close to the real Universal Robots names so that the web interface, the Python API, and the official RTDE field tables line up naturally.
+
+### Main features
+
+- split `backend/` and `frontend/` structure
+- one-place robot IP configuration in `app_config.py`
+- real RTDE field names such as `timestamp`, `actual_q`, `actual_TCP_pose`, and `input_int_register_24`
+- mesh-based digital twin with procedural fallback
+- live values, live charts, CSV recording, JSON export, and event logging
+- current-window monitoring using `target_current`, `actual_current`, and `actual_current_window`
+- simple wrapper class: `UR_RTDE`
+- core class API: `URRobot`
+- Separate Sphinx trees for **EN-only** and **KO-only** navigation
 - GitHub Pages workflow under `.github/workflows/docs.yml`
 
----
-
-## Project layout
-
-```text
-backend/                         FastAPI app, RTDE service, RTDE class
-  __init__.py
-  main.py                        API routes and static mounts
-  service.py                     RTDE worker, history, recording, events
-  settings.py                    Runtime defaults from app_config.py
-  models.py                      Request and response models
-  ur_robot.py                    Main RTDE class API
-  ur_rtde_wire.py                Low-level RTDE wire protocol
-  requirements.txt               Dashboard/server Python dependencies
-
-frontend/                        Browser UI
-  index.html                     Dashboard page
-  assets/app.js                  Dashboard logic
-  assets/digital_twin.js         3D digital twin logic
-  assets/style.css               Styling
-  assets/ur_mesh_presets.json    Robot model presets
-
-examples/                        Python usage examples
-  class_api_example.py           Synchronous API example
-  class_api_async_example.py     Async API example
-
-docs/                            Sphinx documentation
-  Makefile
-  make.bat
-  requirements.txt
-  source/
-    conf.py
-    index.rst
-    getting_started.rst
-    rtde_background.rst
-    dashboard_guide.rst
-    python_api.rst
-    troubleshooting.rst
-    github_pages.rst
-    api_reference.rst
-
-.github/workflows/
-  docs.yml                       GitHub Pages workflow for Sphinx HTML
-
-app_config.py                    Single source of truth for robot defaults
-run_dashboard.py                 Starts the dashboard server
-start_dashboard.ps1              PowerShell helper
-ur_rtde_api.py                   Simple import wrapper for the class API
-README.md                        This guide
-```
-
----
-
-## One place to change the robot IP
-
-Edit only `app_config.py`:
-
-```python
-ROBOT_HOST = "192.168.163.128"
-```
-
-Then restart the dashboard:
-
-```powershell
-python ./run_dashboard.py
-```
-
-The dashboard shows the host, but it is intentionally read-only in the UI so there is only one place to change it.
-
----
-
-## Quick start on Windows
-
-Create and activate a virtual environment:
+### Quick start on Windows
 
 ```powershell
 py -3 -m venv .venv
 ./.venv/Scripts/Activate.ps1
 python -m pip install --upgrade pip
 pip install -r ./backend/requirements.txt
-```
-
-Start the dashboard:
-
-```powershell
 python ./run_dashboard.py
 ```
 
-Open the dashboard in your browser:
+Open the browser:
 
 ```text
 http://127.0.0.1:8008
 ```
 
----
+### Single-source runtime configuration
 
-## Default runtime configuration
-
-The main runtime defaults live in `app_config.py`.
-
-Example:
+Edit only `app_config.py`:
 
 ```python
 ROBOT_HOST = "192.168.163.128"
@@ -144,37 +80,12 @@ ROBOT_FIELDS = [
     "timestamp",
     "actual_q",
     "actual_TCP_pose",
-    "runtime_state",
 ]
-ROBOT_HISTORY_SECONDS = 45.0
-ROBOT_HISTORY_SAMPLE_HZ = 12.0
-WS_PUSH_HZ = 2.0
-LIVE_PUSH_HZ = 10.0
-UI_HOST = "127.0.0.1"
-UI_PORT = 8008
 ```
-
----
-
-## Choosing RTDE fields
-
-This project uses **real Universal Robots RTDE field names** on purpose.
-
-Examples:
-
-- `timestamp`
-- `actual_q`
-- `actual_qd`
-- `actual_current`
-- `actual_current_window`
-- `actual_TCP_pose`
-- `actual_digital_input_bits`
-- `input_int_register_24`
-- `output_int_register_24`
 
 ### Recommended field sets
 
-#### Digital twin at high frequency
+High-rate digital twin:
 
 ```python
 ROBOT_FREQUENCY_HZ = 500.0
@@ -185,37 +96,7 @@ ROBOT_FIELDS = [
 ]
 ```
 
-#### Dashboard with motion state
-
-```python
-ROBOT_FREQUENCY_HZ = 125.0
-ROBOT_FIELDS = [
-    "timestamp",
-    "actual_q",
-    "actual_qd",
-    "actual_TCP_pose",
-    "actual_TCP_speed",
-    "runtime_state",
-    "speed_scaling",
-]
-```
-
-#### GP register monitoring and write-back
-
-```python
-ROBOT_FREQUENCY_HZ = 125.0
-ROBOT_FIELDS = [
-    "timestamp",
-    "actual_q",
-    "actual_TCP_pose",
-    "input_int_register_24",
-    "output_int_register_24",
-    "input_double_register_24",
-    "output_double_register_24",
-]
-```
-
-#### Current-window safety monitor
+Current-window monitoring:
 
 ```python
 ROBOT_FREQUENCY_HZ = 125.0
@@ -229,87 +110,7 @@ ROBOT_FIELDS = [
 ]
 ```
 
----
-
-## GP input vs GP output
-
-Keep these two groups clearly separated.
-
-### GP inputs: writable from the RTDE client
-
-- `input_bit_register_64` to `input_bit_register_127`
-- `input_int_register_24` to `input_int_register_47`
-- `input_double_register_24` to `input_double_register_47`
-
-### GP outputs: readable from the RTDE client
-
-- `output_bit_register_64` to `output_bit_register_127`
-- `output_int_register_24` to `output_int_register_47`
-- `output_double_register_24` to `output_double_register_47`
-
-### Practical rule
-
-- If you want the client or dashboard to **write** a GP value, use an `input_*` register.
-- If you want to **observe** a controller-side GP value, use an `output_*` register.
-
----
-
-## Current-window monitoring
-
-To display current behavior together with the allowed deviation window, request these fields together:
-
-```python
-ROBOT_FIELDS = [
-    "timestamp",
-    "target_current",
-    "actual_current",
-    "actual_current_window",
-]
-```
-
-The dashboard computes a practical monitoring ratio from those fields:
-
-```text
-usage = abs(actual_current - target_current) / actual_current_window
-```
-
-That ratio is intended as a dashboard aid. It is not a replacement for the robot's certified safety functions.
-
----
-
-## Why `actual_hz` can drop at 500 Hz
-
-A high RTDE request frequency does not guarantee that every consumer layer can process every frame.
-
-Common reasons for a lower effective rate:
-
-- too many RTDE output fields at once
-- a heavy dashboard payload or history retention cost
-- mesh twin rendering plus charts plus live tables at the same time
-- controller-side packet skipping under load
-
-Practical guidance:
-
-- Use **500 Hz only for a slim recipe**.
-- Use **125 Hz** for more complete dashboard monitoring.
-- Split workflows: use a light high-rate twin profile and a richer lower-rate diagnostics profile.
-
----
-
-## Dashboard quick use
-
-1. Set `ROBOT_HOST` and `ROBOT_FIELDS` in `app_config.py`.
-2. Start the server with `python ./run_dashboard.py`.
-3. Open `http://127.0.0.1:8008`.
-4. Click **Start**.
-5. Watch the live values, charts, digital twin, and current-window panel.
-6. If you configured GP input fields, write values from the dashboard GP panel.
-
----
-
-## Python API quick use
-
-### Small wrapper API
+### Python API example
 
 ```python
 from ur_rtde_api import UR_RTDE
@@ -328,9 +129,6 @@ robot = UR_RTDE(
 robot.start()
 try:
     print(robot["actual_q"])
-    print(robot.q_deg())
-    print(robot.tcp_rpy_deg())
-
     robot["input_int_register_24"] = 33
     print(robot["input_int_register_24"])
 finally:
@@ -338,79 +136,79 @@ finally:
     robot.close()
 ```
 
-### Direct core API
+### Sphinx docs and GitHub Pages
 
-```python
-from backend.ur_robot import URRobot
+Install doc dependencies:
 
-robot = URRobot(
-    host="192.168.163.128",
-    frequency_hz=125.0,
-    fields=["timestamp", "actual_q", "actual_TCP_pose"],
-)
-
-robot.start()
-try:
-    frame = robot.wait_next_frame(timeout=1.0)
-    print(frame["actual_q"])
-finally:
-    robot.stop()
-    robot.close()
+```powershell
+pip install -r ./docs/requirements.txt
 ```
 
-### Async API
+Build docs locally:
 
-```python
-import asyncio
-from backend.ur_robot import URRobot
-
-async def main() -> None:
-    robot = URRobot(
-        host="192.168.163.128",
-        frequency_hz=125.0,
-        fields=["timestamp", "actual_q", "actual_TCP_pose"],
-    )
-
-    await robot.start_async()
-    try:
-        frame = await robot.wait_next_frame_async(timeout=1.0)
-        print(frame["actual_q"])
-    finally:
-        await robot.stop_async()
-        await robot.close_async()
-
-asyncio.run(main())
+```powershell
+python -m sphinx -M html docs/source docs/build
 ```
+
+Open:
+
+```text
+docs/build/html/index.html
+```
+
+The repository already includes `.github/workflows/docs.yml` for GitHub Pages deployment.
 
 ---
 
-## Conversion helpers
+## KR
 
-The API includes a few convenience conversion helpers for display and debugging.
+### 이 저장소의 목적
 
-- `robot.q_deg()` -> joint angles in degrees
-- `robot.tcp_mm()` -> TCP xyz in mm, rotation-vector in rad
-- `robot.tcp_mm_deg()` -> TCP xyz in mm, rotation-vector in deg
-- `robot.tcp_rpy()` -> TCP xyz in mm, RPY in rad
-- `robot.tcp_rpy_deg()` -> TCP xyz in mm, RPY in deg
+이 저장소는 다음 세 가지를 더 쉽게 하기 위한 참고 프로그램입니다.
 
----
+1. 브라우저에서 로봇 상태를 확인하기
+2. Python에서 RTDE 데이터를 읽고 쓰기
+3. Sphinx + GitHub Pages로 내부 문서를 배포하기
 
-## Common start-up failures
+웹 인터페이스, Python API, 공식 RTDE 표가 자연스럽게 연결되도록 실제 Universal Robots RTDE 필드명을 최대한 그대로 유지합니다.
 
-### `RTDE output setup contains unsupported fields: ... NOT_FOUND`
+### 주요 기능
 
-The controller does not support one or more requested output fields.
+- `backend/` 와 `frontend/` 분리 구조
+- `app_config.py` 한 곳에서 로봇 IP 설정
+- `timestamp`, `actual_q`, `actual_TCP_pose`, `input_int_register_24` 같은 실제 RTDE 필드명 사용
+- mesh 기반 디지털 트윈과 procedural fallback
+- 실시간 값, 차트, CSV 기록, JSON export, 이벤트 로그
+- `target_current`, `actual_current`, `actual_current_window` 기반 current-window 모니터링
+- 간단한 래퍼 클래스 `UR_RTDE`
+- 코어 클래스 API `URRobot`
+- 영문 전용 / 한글 전용으로 분리된 Sphinx 문서
+- `.github/workflows/docs.yml` 기반 GitHub Pages 배포
 
-Typical fix:
+### Windows 빠른 시작
 
-- remove the unsupported field
-- reduce to a known-good set such as `timestamp`, `actual_q`, `actual_TCP_pose`
-- start again
+```powershell
+py -3 -m venv .venv
+./.venv/Scripts/Activate.ps1
+python -m pip install --upgrade pip
+pip install -r ./backend/requirements.txt
+python ./run_dashboard.py
+```
 
-Example:
+브라우저 주소:
+
+```text
+http://127.0.0.1:8008
+```
+
+### 단일 설정 파일
+
+`app_config.py` 만 수정하면 됩니다.
 
 ```python
+ROBOT_HOST = "192.168.163.128"
+ROBOT_FREQUENCY_HZ = 125.0
+ROBOT_MODEL = "ur5e"
 ROBOT_FIELDS = [
     "timestamp",
     "actual_q",
@@ -418,97 +216,77 @@ ROBOT_FIELDS = [
 ]
 ```
 
-### `RTDE start rejected`
+### 권장 필드 조합
 
-Typical causes:
+고속 디지털 트윈:
 
-- the requested frequency and field set are too heavy together
-- the output recipe is invalid
-- a security or service setting blocks the connection
+```python
+ROBOT_FREQUENCY_HZ = 500.0
+ROBOT_FIELDS = [
+    "timestamp",
+    "actual_q",
+    "actual_TCP_pose",
+]
+```
 
-Practical fix order:
+Current-window 모니터링:
 
-1. test with `timestamp`, `actual_q`, `actual_TCP_pose`
-2. reduce to `125.0` Hz
-3. re-add fields one by one
+```python
+ROBOT_FREQUENCY_HZ = 125.0
+ROBOT_FIELDS = [
+    "timestamp",
+    "actual_q",
+    "actual_TCP_pose",
+    "target_current",
+    "actual_current",
+    "actual_current_window",
+]
+```
 
-### GP write does not work
+### Python API 예제
 
-Typical causes:
+```python
+from ur_rtde_api import UR_RTDE
 
-- the field is an `output_*` register instead of an `input_*` register
-- another RTDE client already owns that input variable
-- the field was not included in the active setup
+robot = UR_RTDE(
+    HOST="192.168.163.128",
+    FREQUENCY_HZ=125,
+    FIELD=[
+        "timestamp",
+        "actual_q",
+        "actual_TCP_pose",
+        "input_int_register_24",
+    ],
+)
 
----
+robot.start()
+try:
+    print(robot["actual_q"])
+    robot["input_int_register_24"] = 33
+    print(robot["input_int_register_24"])
+finally:
+    robot.stop()
+    robot.close()
+```
 
-## Building local Sphinx documentation
+### Sphinx 문서와 GitHub Pages
 
-Install the docs dependencies in the same virtual environment:
+문서 의존성 설치:
 
 ```powershell
 pip install -r ./docs/requirements.txt
 ```
 
-Build the HTML docs:
+로컬 빌드:
 
 ```powershell
 python -m sphinx -M html docs/source docs/build
 ```
 
-Open the built documentation:
+결과 파일:
 
 ```text
 docs/build/html/index.html
 ```
 
----
-
-## Publishing docs to GitHub Pages
-
-This repository includes a workflow at:
-
-```text
-.github/workflows/docs.yml
-```
-
-Recommended process:
-
-1. Push the repository to GitHub.
-2. In repository settings, enable **GitHub Pages** and set the source to **GitHub Actions**.
-3. Push to `main`.
-4. GitHub Actions will build `docs/build/html` and deploy it to Pages.
-
----
-
-## Documentation overview
-
-The Sphinx site is split into these pages:
-
-- `getting_started.rst` — installation and first run
-- `rtde_background.rst` — RTDE concepts and official naming model
-- `dashboard_guide.rst` — web UI usage
-- `python_api.rst` — class-style Python API usage
-- `troubleshooting.rst` — failure modes and field debugging
-- `github_pages.rst` — local build and GitHub Pages deploy flow
-- `api_reference.rst` — generated API reference
-
----
-
-## Notes about robot appearance and URDF/meshes
-
-If `robot_assets/` is present, the digital twin can use mesh assets so the visual result is closer to the real robot. If mesh loading fails, the dashboard falls back to a procedural twin.
-
-For documentation-only updates or code-only patches, you do not need to ship `robot_assets/` every time.
-
----
-
-## Suggested workflow for daily use
-
-- Keep `app_config.py` small and explicit.
-- Use the real RTDE field names in `ROBOT_FIELDS`.
-- Start with a known-good slim recipe.
-- Only add current-window or GP fields when you actually need them.
-- Use the dashboard for visualization and quick checks.
-- Use `UR_RTDE` or `URRobot` directly from scripts for automation.
-- Keep the Sphinx docs in the same repository so the dashboard and API stay documented together.
+GitHub Pages 배포용 workflow는 `.github/workflows/docs.yml` 에 이미 포함되어 있습니다.

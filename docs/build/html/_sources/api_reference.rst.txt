@@ -1,18 +1,6 @@
-API reference
+:orphan:
+
+Api Reference
 =============
 
-Wrapper module
---------------
-
-.. automodule:: ur_rtde_api
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Core RTDE module
-----------------
-
-.. automodule:: backend.ur_robot
-   :members:
-   :undoc-members:
-   :show-inheritance:
+This page has moved to :doc:`en/api_reference`.

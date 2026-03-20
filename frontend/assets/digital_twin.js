@@ -5,7 +5,8 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 
 const Y_AXIS = new THREE.Vector3(0, 1, 0);
 const FLANGE_RPY = new THREE.Euler(0, -Math.PI / 2, -Math.PI / 2, "XYZ");
-const MESH_CONFIG_URL = "/assets/ur_mesh_presets.json";
+const ASSET_VERSION = "20260320-model-mesh-fix";
+const MESH_CONFIG_URL = `/assets/ur_mesh_presets.json?v=${ASSET_VERSION}`;
 const DEFAULT_IMPORTED_MESH_SCALE = 1.0; // UR Collada assets already contain their own unit transform.
 const JOINT_CHAIN = [
   { joint: "shoulder", link: "shoulder" },
@@ -122,9 +123,30 @@ Object.values(MODEL_SPECS).forEach((spec) => {
   spec.reach = spec.dh.reduce((acc, joint) => acc + Math.abs(joint.a) + Math.abs(joint.d), 0.0);
 });
 
+const MODEL_ALIASES = {
+  ur7e: "ur5e",
+  ur12e: "ur10e",
+};
+
+const SCENE_REFERENCE_REACH = Math.max(...Object.values(MODEL_SPECS).map((spec) => spec.reach));
+const WORKSPACE_RING_RADIUS = SCENE_REFERENCE_REACH * 0.55;
+
 export const ROBOT_MODEL_LABELS = Object.fromEntries(
   Object.entries(MODEL_SPECS).map(([key, spec]) => [key, spec.label]),
 );
+
+function normalizeModelKey(modelKey) {
+  const raw = String(modelKey || "").trim().toLowerCase();
+  if (MODEL_SPECS[raw]) return raw;
+  const alias = MODEL_ALIASES[raw];
+  if (alias && MODEL_SPECS[alias]) return alias;
+  return "ur5e";
+}
+
+function meshFamilyFromPath(meshPath) {
+  const match = String(meshPath || "").match(/meshes\/([^/]+)\//i);
+  return match ? String(match[1]).toLowerCase() : null;
+}
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -680,6 +702,8 @@ export class DigitalTwinView {
         yaw: Number(linkConfig.offset?.yaw || 0),
       },
       url: loadedUrl,
+      source_model: meshFamilyFromPath(loadedUrl),
+      render_mode: String(loadedUrl).toLowerCase().endsWith(".stl") ? "collision" : "visual",
       usedFallback,
       requested_scale: Number(inferImportedMeshScale(linkConfig.mesh_path, linkConfig.scale).toFixed(6)),
       applied_scale: Number((rescale.scale || wrapper.scale.x).toFixed(6)),
@@ -777,8 +801,12 @@ export class DigitalTwinView {
       this.visualReady = false;
       this.visualRoot.visible = false;
       this.proceduralGroup.visible = true;
-      this.visualWarning = "Mesh loading failed. Using the procedural fallback.";
-      this.log("error", "Mesh loading failed", { modelKey, error: String(error) });
+      this.visualWarning = "Mesh loading failed. Run tools/install_robot_assets.py --zip meshes.zip and refresh the browser. Using the procedural fallback.";
+      this.log("error", "Mesh loading failed", {
+        modelKey,
+        error: String(error),
+        hint: "Run tools/install_robot_assets.py --zip meshes.zip, then Ctrl+F5 in the browser.",
+      });
     }
   }
 
@@ -811,14 +839,14 @@ export class DigitalTwinView {
     const ringPoints = [];
     for (let index = 0; index < 96; index += 1) {
       const theta = (index / 96) * Math.PI * 2;
-      ringPoints.push(new THREE.Vector3(Math.cos(theta) * reach * 0.55, Math.sin(theta) * reach * 0.55, 0.0));
+      ringPoints.push(new THREE.Vector3(Math.cos(theta) * WORKSPACE_RING_RADIUS, Math.sin(theta) * WORKSPACE_RING_RADIUS, 0.0));
     }
     this.workspaceRing.geometry.dispose();
     this.workspaceRing.geometry = new THREE.BufferGeometry().setFromPoints(ringPoints);
   }
 
   setModel(modelKey) {
-    const key = MODEL_SPECS[modelKey] ? modelKey : "ur5e";
+    const key = normalizeModelKey(modelKey);
     this.modelKey = key;
     this.configureProceduralModel(key);
     this.setView("iso", false);
@@ -829,15 +857,16 @@ export class DigitalTwinView {
   setView(name = "iso", updateTarget = true) {
     const spec = MODEL_SPECS[this.modelKey] || MODEL_SPECS.ur5e;
     const reach = spec.reach;
+    const sceneReach = SCENE_REFERENCE_REACH;
     const target = new THREE.Vector3(0, 0, clamp(spec.dh[0].d + reach * 0.16, 0.14, 0.8));
     if (updateTarget) this.controls.target.copy(target);
 
     const viewMap = {
-      iso: new THREE.Vector3(reach * 1.05, -reach * 1.25, reach * 0.95),
-      front: new THREE.Vector3(reach * 1.55, 0.0, reach * 0.85),
-      side: new THREE.Vector3(0.0, -reach * 1.65, reach * 0.85),
-      top: new THREE.Vector3(0.001, -reach * 0.01, reach * 2.05),
-      reset: new THREE.Vector3(reach * 1.15, -reach * 1.35, reach * 1.05),
+      iso: new THREE.Vector3(sceneReach * 1.05, -sceneReach * 1.25, sceneReach * 0.95),
+      front: new THREE.Vector3(sceneReach * 1.55, 0.0, sceneReach * 0.85),
+      side: new THREE.Vector3(0.0, -sceneReach * 1.65, sceneReach * 0.85),
+      top: new THREE.Vector3(0.001, -sceneReach * 0.01, sceneReach * 2.05),
+      reset: new THREE.Vector3(sceneReach * 1.15, -sceneReach * 1.35, sceneReach * 1.05),
     };
     const position = viewMap[name] || viewMap.iso;
     this.camera.position.copy(position);
@@ -894,14 +923,14 @@ export class DigitalTwinView {
       flangeQuaternion,
       jointDeg: actualQ.map((value) => THREE.MathUtils.radToDeg(Number(value) || 0)),
       mode: "mesh live",
-      infoText: "Mesh twin from UR description assets",
+      infoText: "Mesh twin from UR visual description assets",
     };
   }
 
   update(state) {
     if (!state) return this.lastSummary;
 
-    const modelKey = state?.status?.robot_model || state?.config?.robot_model || this.modelKey;
+    const modelKey = normalizeModelKey(state?.status?.robot_model || state?.config?.robot_model || this.modelKey);
     if (modelKey !== this.modelKey) this.setModel(modelKey);
 
     if (this.freeze && this.lastSummary) return this.lastSummary;

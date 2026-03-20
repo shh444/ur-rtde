@@ -1,4 +1,4 @@
-import { DigitalTwinView } from "/assets/digital_twin.js";
+import { DigitalTwinView } from "/assets/digital_twin.js?v=20260320-model-mesh-fix";
 
 const echartsRef = window.echarts;
 const $ = (selector) => document.querySelector(selector);
@@ -55,11 +55,12 @@ const els = {
   twinFkPose: $("#twinFkPose"),
   twinJointDeg: $("#twinJointDeg"),
   twinDebugText: $("#twinDebugText"),
-  copyTwinDebugBtn: $("#copyTwinDebugBtn"),
-  currentMonitorBanner: $("#currentMonitorBanner"),
-  currentMonitorSummary: $("#currentMonitorSummary"),
-  currentMonitorCards: $("#currentMonitorCards"),
   currentJointSelect: $("#currentJointSelect"),
+  currentMonitorState: $("#currentMonitorState"),
+  currentMonitorPeak: $("#currentMonitorPeak"),
+  currentMonitorNote: $("#currentMonitorNote"),
+  currentMonitorBody: $("#currentMonitorBody"),
+  copyTwinDebugBtn: $("#copyTwinDebugBtn"),
   twinTrailToggle: $("#twinTrailToggle"),
   twinFreezeToggle: $("#twinFreezeToggle"),
   twinIsoBtn: $("#twinIsoBtn"),
@@ -101,11 +102,8 @@ function currentViewState() {
     recording: appState.live?.recording || appState.full?.recording,
     export: appState.live?.export || appState.full?.export,
     digital_twin: appState.live?.digital_twin || appState.full?.digital_twin,
-    current_monitor:
-      appState.live?.current_monitor ||
-      appState.full?.current_monitor ||
-      appState.live?.latest?.derived?.current_monitor ||
-      appState.full?.latest?.derived?.current_monitor,
+    current_monitor: appState.live?.current_monitor || appState.full?.current_monitor,
+    history: appState.full?.history,
   };
 }
 
@@ -237,34 +235,73 @@ function auxOption(speedSeries, gpSeries) {
   };
 }
 
-function selectedCurrentJointIndex() {
-  const value = Number(els.currentJointSelect?.value ?? 0);
-  return Number.isFinite(value) ? Math.max(0, Math.min(5, value)) : 0;
+function formatNumber(value, digits = 3) {
+  if (value == null || Number.isNaN(Number(value))) return "-";
+  return Number(value).toFixed(digits).replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1");
 }
 
-function currentWindowOption(history, jointIndex) {
-  const idx = Math.max(0, Math.min(5, jointIndex || 0));
-  const actualSeries = history?.joint_current?.[idx]?.data || [];
-  const targetSeries = history?.target_current?.[idx]?.data || [];
-  const windowSeries = history?.current_window?.[idx]?.data || [];
+function ensureCurrentJointOptions() {
+  if (!els.currentJointSelect || els.currentJointSelect.options.length) return;
+  for (let i = 0; i < 6; i += 1) {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = `J${i + 1}`;
+    els.currentJointSelect.appendChild(opt);
+  }
+  els.currentJointSelect.value = "0";
+}
 
-  const upperSeries = [];
-  const lowerSeries = [];
-  const length = Math.min(targetSeries.length, windowSeries.length);
-  for (let i = 0; i < length; i += 1) {
-    const t = targetSeries[i]?.[0];
-    const target = targetSeries[i]?.[1];
-    const window = windowSeries[i]?.[1];
-    if (Number.isFinite(t) && Number.isFinite(target) && Number.isFinite(window)) {
-      upperSeries.push([t, target + window]);
-      lowerSeries.push([t, target - window]);
+function buildCurrentWindowOption(history, jointIndex) {
+  const actual = history?.joint_current?.[jointIndex]?.data || [];
+  const target = history?.joint_target_current?.[jointIndex]?.data || [];
+  const windowSeries = history?.joint_current_window?.[jointIndex]?.data || [];
+  const ratio = history?.joint_current_ratio?.[jointIndex]?.data || [];
+  const upper = [];
+  const lower = [];
+  const count = Math.min(target.length, windowSeries.length);
+  for (let i = 0; i < count; i += 1) {
+    const t = target[i]?.[0];
+    const tv = target[i]?.[1];
+    const w = Math.abs(windowSeries[i]?.[1] ?? 0);
+    if (Number.isFinite(t) && Number.isFinite(tv) && Number.isFinite(w)) {
+      upper.push([t, tv + w]);
+      lower.push([t, tv - w]);
     }
+  }
+
+  const series = [
+    { type: "line", name: `J${jointIndex + 1} actual`, data: actual, symbol: "none", lineStyle: { width: 2.4 } },
+  ];
+  if (target.length) {
+    series.push({ type: "line", name: `J${jointIndex + 1} target`, data: target, symbol: "none", lineStyle: { width: 2, type: "dashed" } });
+  }
+  if (upper.length) {
+    series.push({ type: "line", name: "upper window", data: upper, symbol: "none", lineStyle: { width: 1.6, type: "dotted" } });
+  }
+  if (lower.length) {
+    series.push({ type: "line", name: "lower window", data: lower, symbol: "none", lineStyle: { width: 1.6, type: "dotted" } });
+  }
+  if (ratio.length) {
+    series.push({
+      type: "line",
+      name: "window usage",
+      data: ratio,
+      symbol: "none",
+      yAxisIndex: 1,
+      lineStyle: { width: 2 },
+      markLine: {
+        symbol: ["none", "none"],
+        label: { color: "#fca5a5", formatter: "100%" },
+        lineStyle: { type: "dashed", width: 1.4 },
+        data: [{ yAxis: 1 }],
+      },
+    });
   }
 
   return {
     backgroundColor: "transparent",
     animation: false,
-    grid: { left: 54, right: 32, top: 34, bottom: 48 },
+    grid: { left: 54, right: 62, top: 34, bottom: 48 },
     tooltip: { trigger: "axis", axisPointer: { type: "cross" } },
     legend: { top: 0, textStyle: { color: "#c7d2fe" } },
     toolbox: {
@@ -285,76 +322,71 @@ function currentWindowOption(history, jointIndex) {
       axisLine: { lineStyle: { color: "rgba(148,163,184,0.35)" } },
       splitLine: { lineStyle: { color: "rgba(148,163,184,0.10)" } },
     },
-    yAxis: {
-      type: "value",
-      name: "A",
-      axisLabel: { color: "#9fb0cf" },
-      axisLine: { lineStyle: { color: "rgba(148,163,184,0.35)" } },
-      splitLine: { lineStyle: { color: "rgba(148,163,184,0.10)" } },
-    },
+    yAxis: [
+      {
+        type: "value",
+        name: "current [A]",
+        axisLabel: { color: "#9fb0cf" },
+        axisLine: { lineStyle: { color: "rgba(148,163,184,0.35)" } },
+        splitLine: { lineStyle: { color: "rgba(148,163,184,0.10)" } },
+      },
+      {
+        type: "value",
+        name: "usage",
+        min: 0,
+        axisLabel: { color: "#9fb0cf", formatter: (value) => `${Math.round(value * 100)}%` },
+        axisLine: { lineStyle: { color: "rgba(148,163,184,0.35)" } },
+        splitLine: { show: false },
+      },
+    ],
     dataZoom: [
       { type: "inside" },
       { type: "slider", height: 18, bottom: 6, borderColor: "rgba(148,163,184,0.18)", backgroundColor: "rgba(255,255,255,0.02)" },
     ],
-    series: [
-      { type: "line", name: "actual_current", data: actualSeries, symbol: "none", smooth: false, lineStyle: { width: 2 } },
-      { type: "line", name: "target_current", data: targetSeries, symbol: "none", smooth: false, lineStyle: { width: 2, type: "solid" } },
-      { type: "line", name: "upper window", data: upperSeries, symbol: "none", smooth: false, lineStyle: { width: 1.5, type: "dashed" } },
-      { type: "line", name: "lower window", data: lowerSeries, symbol: "none", smooth: false, lineStyle: { width: 1.5, type: "dashed" } },
-    ],
+    series,
   };
 }
 
-function formatMonitorNumber(value, digits = 3) {
-  return Number.isFinite(value) ? value.toFixed(digits) : "-";
-}
-
-function renderCurrentMonitor(currentMonitor) {
-  if (!els.currentMonitorCards) return;
-  els.currentMonitorCards.innerHTML = "";
-  const summary = currentMonitor?.summary || {};
-  const safetyStatus = currentMonitor?.safety_status != null ? ` | safety_status ${currentMonitor.safety_status}` : "";
-  els.currentMonitorSummary.textContent = `OK ${summary.ok_count ?? 0} | Warn ${summary.warn_count ?? 0} | Exceed ${summary.exceed_count ?? 0} | max ratio ${formatMonitorNumber(summary.max_window_ratio, 2)} | max delta ${formatMonitorNumber(summary.max_delta_a, 3)} A${safetyStatus}`;
-  els.currentMonitorBanner.textContent = currentMonitor?.message || currentMonitor?.monitoring_note || "Add actual_current, target_current, and actual_current_window to see current window monitoring.";
-  (currentMonitor?.joints || []).forEach((joint) => {
-    const card = document.createElement("article");
-    card.className = `current-card ${joint.status || "unknown"}`;
-    const head = document.createElement("div");
-    head.className = "current-card-head";
-    const title = document.createElement("strong");
-    title.textContent = joint.joint || "J?";
-    const badge = document.createElement("span");
-    badge.className = `status-badge ${joint.status || "unknown"}`;
-    badge.textContent = joint.status || "unknown";
-    head.append(title, badge);
-
-    const lines = [
-      ["actual_current", `${formatMonitorNumber(joint.actual_current)} A`],
-      ["target_current", `${formatMonitorNumber(joint.target_current)} A`],
-      ["actual_current_window", `±${formatMonitorNumber(joint.actual_current_window)} A`],
-      ["allowed", `[${formatMonitorNumber(joint.lower_limit)}, ${formatMonitorNumber(joint.upper_limit)}] A`],
-      ["delta", `${formatMonitorNumber(joint.delta)} A`],
-      ["window_ratio", Number.isFinite(joint.window_ratio) ? `${(joint.window_ratio * 100).toFixed(1)} %` : "-"],
-      ["joint_control_output", `${formatMonitorNumber(joint.joint_control_output)} A`],
-      ["joint_temperature", `${formatMonitorNumber(joint.joint_temperature, 1)} C`],
-    ];
-
-    const body = document.createElement("div");
-    body.className = "current-card-body";
-    lines.forEach(([name, value]) => {
-      const row = document.createElement("div");
-      row.className = "current-row";
-      const left = document.createElement("span");
-      left.textContent = name;
-      const right = document.createElement("strong");
-      right.textContent = value;
-      row.append(left, right);
-      body.appendChild(row);
+function renderCurrentMonitor(monitor, history) {
+  ensureCurrentJointOptions();
+  const selectedJoint = Number(els.currentJointSelect?.value || 0);
+  const safeIndex = Number.isFinite(selectedJoint) ? Math.min(Math.max(selectedJoint, 0), 5) : 0;
+  const state = String(monitor?.overall_state || "unknown");
+  if (els.currentMonitorState) {
+    els.currentMonitorState.textContent = state;
+    els.currentMonitorState.className = `badge ${state === "ok" ? "running" : (state === "watch" ? "watch" : (state === "exceeded" ? "error" : "neutral"))}`;
+  }
+  if (els.currentMonitorPeak) {
+    const peak = monitor?.max_ratio;
+    els.currentMonitorPeak.textContent = peak != null ? `peak ${Math.round(peak * 100)}%` : "peak -";
+  }
+  if (els.currentMonitorNote) {
+    const hasAll = monitor?.has_actual_current && monitor?.has_target_current && monitor?.has_current_window;
+    els.currentMonitorNote.textContent = hasAll
+      ? "Usage = |actual_current - target_current| / actual_current_window. Over 100% means the actual current is outside the allowed window."
+      : (monitor?.note || "Add target_current, actual_current, and actual_current_window for the full safety view.");
+  }
+  if (els.currentMonitorBody) {
+    els.currentMonitorBody.innerHTML = "";
+    (monitor?.joints || []).forEach((joint) => {
+      const tr = document.createElement("tr");
+      const ratio = joint.ratio;
+      const usage = ratio == null ? "-" : `${Math.round(ratio * 100)}%`;
+      const stateBadge = `<span class="state-pill ${joint.state || "unknown"}">${joint.state || "unknown"}</span>`;
+      tr.innerHTML = `
+        <td>${joint.name}</td>
+        <td>${formatNumber(joint.actual_current)}</td>
+        <td>${formatNumber(joint.target_current)}</td>
+        <td>${formatNumber(joint.current_window)}</td>
+        <td>${formatNumber(joint.deviation)}</td>
+        <td>${usage}</td>
+        <td>${formatNumber(joint.torque)}</td>
+        <td>${stateBadge}</td>
+      `;
+      els.currentMonitorBody.appendChild(tr);
     });
-
-    card.append(head, body);
-    els.currentMonitorCards.appendChild(card);
-  });
+  }
+  charts.currentWindow.setOption(buildCurrentWindowOption(history || {}, safeIndex), true);
 }
 
 function setFormFieldsFromState(state, force = false) {
@@ -376,17 +408,7 @@ function updateBadge(status) {
 
 function updateStats(status) {
   if (els.statHost) els.statHost.textContent = status.host || "-";
-  if (els.statHz) {
-    const requestedHz = Number(status.frequency_hz ?? 0);
-    const activeHz = Number(status.active_frequency_hz ?? requestedHz ?? 0);
-    if (requestedHz && activeHz && Math.abs(requestedHz - activeHz) > 1e-6) {
-      els.statHz.textContent = `${requestedHz} -> ${activeHz} Hz`;
-    } else if (requestedHz) {
-      els.statHz.textContent = `${requestedHz} Hz`;
-    } else {
-      els.statHz.textContent = "-";
-    }
-  }
+  if (els.statHz) els.statHz.textContent = status.frequency_hz ? `${status.frequency_hz} Hz` : "-";
   if (els.statActualHz) els.statActualHz.textContent = status.reader_rate_hz ? `${status.reader_rate_hz} Hz` : (status.approx_rate_hz ? `${status.approx_rate_hz} Hz` : "-");
   if (els.statConsumerHz) els.statConsumerHz.textContent = status.consumer_rate_hz ? `${status.consumer_rate_hz} Hz` : "-";
   if (els.statSkipped) els.statSkipped.textContent = status.consumer_skipped_frames ?? "-";
@@ -535,7 +557,6 @@ function updateCharts(history) {
   charts.jointDeg.setOption(baseLineOption(history.joint_deg || [], "deg"), true);
   charts.jointVelDeg.setOption(baseLineOption(history.joint_vel_deg || [], "deg/s"), true);
   charts.jointCurrent.setOption(baseLineOption(history.joint_current || [], "A"), true);
-  charts.currentWindow.setOption(currentWindowOption(history || {}, selectedCurrentJointIndex()), true);
   charts.tcpPos.setOption(baseLineOption(history.tcp_xyz_mm || [], "mm"), true);
   charts.tcpRpy.setOption(baseLineOption(history.tcp_rpy_deg || [], "deg"), true);
   charts.aux.setOption(auxOption(history.speed || [], history.gp_numeric || []), true);
@@ -682,7 +703,7 @@ function renderCommon(state, { forceForm = false } = {}) {
   updateErrorBanner(status);
   updateRecording(state.recording, state.export);
   renderTwin(state);
-  renderCurrentMonitor(state.current_monitor || state.latest?.derived?.current_monitor);
+  renderCurrentMonitor(state.current_monitor || state.latest?.derived?.current_monitor || {}, appState.full?.history || {});
 }
 
 function renderFullState(state, { forceForm = false } = {}) {
@@ -695,6 +716,7 @@ function renderFullState(state, { forceForm = false } = {}) {
   renderBits(els.doBits, viewState.latest?.derived?.do_bits || state.latest?.derived?.do_bits || []);
   renderEvents(state.events || []);
   updateCharts(state.history || {});
+  renderCurrentMonitor(viewState.current_monitor || state.current_monitor || {}, state.history || {});
 }
 
 function renderLiveState(state) {
@@ -736,13 +758,6 @@ function connectLiveWebSocket() {
 }
 
 function bindEvents() {
-  if (els.currentJointSelect) {
-    els.currentJointSelect.innerHTML = Array.from({ length: 6 }, (_, index) => `<option value="${index}">J${index + 1}</option>`).join("");
-    els.currentJointSelect.value = "0";
-    els.currentJointSelect.addEventListener("change", () => {
-      if (appState.full?.history) updateCharts(appState.full.history);
-    });
-  }
   [els.frequencyInput, els.historySecondsInput, els.historySampleHzInput, els.fieldsInput, els.robotModelSelect].forEach((node) => {
     node.addEventListener("input", () => {
       configDirty = true;
@@ -847,6 +862,10 @@ function bindEvents() {
       }
     });
   }
+
+  els.currentJointSelect?.addEventListener("change", () => {
+    renderCurrentMonitor(currentViewState()?.current_monitor || {}, appState.full?.history || {});
+  });
 
   els.twinTrailToggle.addEventListener("change", () => twin?.setTrailVisible(els.twinTrailToggle.checked));
   els.twinFreezeToggle.addEventListener("change", () => twin?.setFrozen(els.twinFreezeToggle.checked));

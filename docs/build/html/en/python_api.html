@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python API &mdash; RTDE Reference Program</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4448bc75" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=a754ae57"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Web interface guide" href="dashboard_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            RTDE Reference Program
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">RTDE Reference Program</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#screenshots">Screenshots</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#quick-links">Quick links</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rtde_background.html">RTDE background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dashboard_guide.html">Web interface guide</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="github_pages.html">Publishing with Sphinx and GitHub Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ko/index.html">RTDE Reference Program</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../ko/index.html#id1">스크린샷</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ko/index.html#id2">빠른 이동</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../ko/getting_started.html">시작하기</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/rtde_background.html">RTDE 배경 설명</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/dashboard_guide.html">웹 인터페이스 가이드</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/python_api.html">Python API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/troubleshooting.html">문제 해결</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/github_pages.html">Sphinx 와 GitHub Pages 배포</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ko/api_reference.html">API 레퍼런스</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">RTDE Reference Program</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">RTDE Reference Program</a></li>
+      <li class="breadcrumb-item active">Python API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/en/python_api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-api">
+<h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h1>
+<div class="lang-switch">
+  <span class="active">EN</span>
+  <a href="../ko/python_api.html">KO</a>
+</div><p>There are two user-facing ways to use this repository from Python.</p>
+<section id="simple-wrapper-ur-rtde">
+<h2>Simple wrapper: <code class="docutils literal notranslate"><span class="pre">UR_RTDE</span></code><a class="headerlink" href="#simple-wrapper-ur-rtde" title="Link to this heading"></a></h2>
+<p>The small wrapper class is designed to be easy to read and easy to copy into application code.</p>
+</section>
+<section id="core-class-urrobot">
+<h2>Core class: <code class="docutils literal notranslate"><span class="pre">URRobot</span></code><a class="headerlink" href="#core-class-urrobot" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">URRobot</span></code> exposes the lower-level interface used internally by the web interface. Use it when you want a slightly more explicit API.</p>
+<p>Typical construction:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">backend.ur_robot</span><span class="w"> </span><span class="kn">import</span> <span class="n">URRobot</span>
+
+<span class="n">robot</span> <span class="o">=</span> <span class="n">URRobot</span><span class="p">(</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;192.168.163.128&quot;</span><span class="p">,</span>
+    <span class="n">frequency_hz</span><span class="o">=</span><span class="mf">125.0</span><span class="p">,</span>
+    <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_q&quot;</span><span class="p">,</span> <span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="async-example">
+<h2>Async example<a class="headerlink" href="#async-example" title="Link to this heading"></a></h2>
+</section>
+<section id="reading-values">
+<h2>Reading values<a class="headerlink" href="#reading-values" title="Link to this heading"></a></h2>
+<p>Both APIs let you read the latest cached value by name:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_q&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;actual_TCP_pose&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-gp-inputs">
+<h2>Writing GP inputs<a class="headerlink" href="#writing-gp-inputs" title="Link to this heading"></a></h2>
+<p>Write only to <code class="docutils literal notranslate"><span class="pre">input_*_register_*</span></code> fields:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_int_register_24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">33</span>
+<span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_double_register_24&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">12.5</span>
+<span class="n">robot</span><span class="p">[</span><span class="s2">&quot;input_bit_register_64&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="conversion-helpers">
+<h2>Conversion helpers<a class="headerlink" href="#conversion-helpers" title="Link to this heading"></a></h2>
+<p>Useful convenience helpers for display and debugging:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">q_deg</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_mm</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_mm_deg</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">tcp_rpy_deg</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-integration-pattern">
+<h2>Suggested integration pattern<a class="headerlink" href="#suggested-integration-pattern" title="Link to this heading"></a></h2>
+<p>For larger applications:</p>
+<ul class="simple">
+<li><p>keep one robot object per robot connection,</p></li>
+<li><p>choose the smallest field list that satisfies the application,</p></li>
+<li><p>use the web interface for inspection,</p></li>
+<li><p>use the Python API for automation and logging.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dashboard_guide.html" class="btn btn-neutral float-left" title="Web interface guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
