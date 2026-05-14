@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 
 try:
     from .models import ConfigRequest, RecordingRequest, SnapshotExportRequest, WriteRequest
+    from .modbus_service import ModbusService
     from .service import DashboardService
     from .settings import (
         DEFAULT_FIELDS,
@@ -20,6 +21,8 @@ try:
         DEFAULT_HISTORY_SECONDS,
         DEFAULT_HOST,
         DEFAULT_LIVE_PUSH_HZ,
+        DEFAULT_MODBUS_HOST,
+        DEFAULT_MODBUS_POLL_HZ,
         DEFAULT_ROBOT_MODEL,
         DEFAULT_UI_HOST,
         DEFAULT_UI_PORT,
@@ -27,6 +30,7 @@ try:
     )
 except ImportError:
     from models import ConfigRequest, RecordingRequest, SnapshotExportRequest, WriteRequest
+    from modbus_service import ModbusService
     from service import DashboardService
     from settings import (
         DEFAULT_FIELDS,
@@ -35,6 +39,8 @@ except ImportError:
         DEFAULT_HISTORY_SECONDS,
         DEFAULT_HOST,
         DEFAULT_LIVE_PUSH_HZ,
+        DEFAULT_MODBUS_HOST,
+        DEFAULT_MODBUS_POLL_HZ,
         DEFAULT_ROBOT_MODEL,
         DEFAULT_UI_HOST,
         DEFAULT_UI_PORT,
@@ -43,6 +49,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent
 FRONTEND_DIR = ROOT.parent / "frontend"
+SHIPYARD_DIR = ROOT.parent / "shipyard_dashboard"
 APP_PUSH_HZ = DEFAULT_WS_PUSH_HZ
 APP_LIVE_PUSH_HZ = DEFAULT_LIVE_PUSH_HZ
 
@@ -55,13 +62,16 @@ service = DashboardService(
     history_sample_hz=DEFAULT_HISTORY_SAMPLE_HZ,
     robot_model=DEFAULT_ROBOT_MODEL,
 )
+modbus = ModbusService(host=DEFAULT_MODBUS_HOST, poll_hz=DEFAULT_MODBUS_POLL_HZ)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    modbus.start()
     try:
         yield
     finally:
+        modbus.shutdown()
         service.shutdown()
 
 
@@ -75,6 +85,8 @@ app.add_middleware(
 )
 app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
 app.mount("/robot_assets", StaticFiles(directory=ROOT.parent / "robot_assets"), name="robot_assets")
+if SHIPYARD_DIR.exists():
+    app.mount("/v2", StaticFiles(directory=SHIPYARD_DIR, html=True), name="shipyard")
 
 
 @app.get("/")
@@ -149,6 +161,21 @@ def api_recording_download(filename: str) -> FileResponse:
 def api_export_download(filename: str) -> FileResponse:
     path = service.exports_dir / filename
     return FileResponse(path, filename=filename)
+
+
+@app.get("/api/modbus/snapshot")
+def api_modbus_snapshot():
+    return modbus.snapshot()
+
+
+@app.websocket("/ws/modbus")
+async def ws_modbus(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        async for snap in modbus.subscribe():
+            await websocket.send_json(snap)
+    except WebSocketDisconnect:
+        return
 
 
 @app.websocket("/ws/stream")

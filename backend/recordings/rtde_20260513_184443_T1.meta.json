@@ -1,0 +1,15 @@
+{
+  "name": "T1",
+  "cell": "VL1",
+  "weld_on": "아니오",
+  "note": "Test1",
+  "block": "",
+  "path": "",
+  "operator": "",
+  "alarms": 0,
+  "startedAt": "2026-05-13 18:44:43",
+  "started_monotonic": 87684.906,
+  "duration": 18,
+  "samples": 0,
+  "endedAt": "2026-05-13 18:45:02"
+}

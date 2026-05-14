@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>조선소 용접 대시보드 — 시안 비교</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  html, body, #root { height: 100%; margin: 0; padding: 0; }
+  body {
+    background: #f0eee9;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  input, select, textarea, button { font-family: inherit; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Data + shared atoms -->
+<script src="data.js"></script>
+<script type="text/babel" src="shared.jsx"></script>
+
+<!-- Design canvas + tweaks shell -->
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<!-- Variant implementations -->
+<script type="text/babel" src="variant-conservative.jsx"></script>
+<script type="text/babel" src="variant-standard.jsx"></script>
+<script type="text/babel" src="variant-experimental.jsx"></script>
+
+<script type="text/babel">
+
+// Tweakable defaults — edited by the host through edit-mode protocol.
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#ff6b35",
+  "darkBg": "#0a0f1c",
+  "panelBg": "#111722",
+  "borderColor": "#1f2a3a",
+  "fontFamily": "JetBrains Mono",
+  "showSpectrum": true,
+  "compactSidebar": false
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAKS);
+
+  // Apply tweaks to the shared TOKENS object so all variants pick them up.
+  React.useEffect(() => {
+    window.TOKENS.accent = tweaks.accentColor;
+    window.TOKENS.bg = tweaks.darkBg;
+    window.TOKENS.panel = tweaks.panelBg;
+    window.TOKENS.border = tweaks.borderColor;
+    // serieses[0] follows accent
+    window.TOKENS.serieses = [
+      tweaks.accentColor, '#22d3ee', '#fbbf24', '#34d399',
+      '#a78bfa', '#f472b6', '#60a5fa', '#fb7185',
+    ];
+  }, [tweaks]);
+
+  return (
+    <>
+      <DesignCanvas
+        title="조선소 용접 대시보드"
+        subtitle="Modbus 실시간 + UR RTDE 사후분석 · 3가지 시안"
+      >
+        <DCSection
+          id="variants"
+          title="시안"
+          subtitle="좌→우: 보수적 SCADA · 표준 워크스페이스 · 실험적 A/B 비교"
+        >
+          <DCArtboard id="v1" label="① 보수적 · 전통 SCADA" width={1500} height={940}>
+            <VariantConservative key={JSON.stringify(tweaks)} />
+          </DCArtboard>
+          <DCArtboard id="v2" label="② 표준 · 타임라인 워크스페이스" width={1500} height={940}>
+            <VariantStandard key={JSON.stringify(tweaks)} />
+          </DCArtboard>
+          <DCArtboard id="v3" label="③ 실험적 · A/B 비교 + 스펙트럼" width={1500} height={940}>
+            <VariantExperimental key={JSON.stringify(tweaks)} />
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection
+          id="notes"
+          title="설계 메모"
+          subtitle="공통 시스템과 트레이드오프"
+        >
+          <DCArtboard id="notes-1" label="시스템" width={520} height={460}>
+            <DesignNotes />
+          </DCArtboard>
+          <DCArtboard id="notes-2" label="시안별 차이" width={520} height={460}>
+            <VariantComparison />
+          </DCArtboard>
+          <DCArtboard id="notes-3" label="다음 단계" width={520} height={460}>
+            <NextSteps />
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="색상">
+          <TweakColor
+            label="액센트 색상"
+            value={tweaks.accentColor}
+            onChange={(v) => setTweak('accentColor', v)}
+            options={['#ff6b35', '#22d3ee', '#fbbf24', '#a78bfa', '#34d399']}
+          />
+          <TweakColor
+            label="배경 (다크 톤)"
+            value={tweaks.darkBg}
+            onChange={(v) => setTweak('darkBg', v)}
+            options={['#0a0f1c', '#0d1117', '#111111', '#0a0a0a']}
+          />
+          <TweakColor
+            label="패널 색상"
+            value={tweaks.panelBg}
+            onChange={(v) => setTweak('panelBg', v)}
+            options={['#111722', '#161b22', '#1a1a1a', '#141414']}
+          />
+          <TweakColor
+            label="보더 색상"
+            value={tweaks.borderColor}
+            onChange={(v) => setTweak('borderColor', v)}
+            options={['#1f2a3a', '#30363d', '#2a2a2a', '#222222']}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+function DesignNotes() {
+  return (
+    <div style={{
+      padding: 24,
+      background: '#fafaf8',
+      width: '100%', height: '100%',
+      fontFamily: 'Pretendard, sans-serif',
+      color: '#2a251f',
+      fontSize: 13,
+      lineHeight: 1.6,
+      overflow: 'auto',
+    }}>
+      <div style={{
+        fontFamily: 'JetBrains Mono', fontSize: 10,
+        color: '#9a8f80', letterSpacing: 1.4, marginBottom: 4,
+      }}>DESIGN SYSTEM</div>
+      <h2 style={{ margin: '0 0 12px', fontSize: 18, fontWeight: 600 }}>공통 시스템</h2>
+      <ul style={{ paddingLeft: 18, margin: '0 0 16px' }}>
+        <li><b>다크 산업용 톤</b> · 배경 <code style={{ background:'#eee', padding:'1px 4px' }}>#0a0f1c</code>, 카드 <code style={{ background:'#eee', padding:'1px 4px' }}>#111722</code></li>
+        <li><b>액센트</b> · 오렌지 <span style={{ color:'#ff6b35' }}>#ff6b35</span> 단일</li>
+        <li><b>시리즈 색상</b> · 오렌지, 시안, 앰버, 그린, 보라, 핑크 (대비 위주)</li>
+        <li><b>타이포</b> · JetBrains Mono (수치/라벨), Pretendard (한글 UI)</li>
+        <li><b>그리드</b> · 1px 보더로 분할된 그리드 영역, 그리드 셀 사이는 보더 색이 비치는 구성</li>
+      </ul>
+      <div style={{
+        fontFamily: 'JetBrains Mono', fontSize: 10,
+        color: '#9a8f80', letterSpacing: 1.4, marginBottom: 4,
+      }}>DATA MODEL</div>
+      <h2 style={{ margin: '0 0 12px', fontSize: 18, fontWeight: 600 }}>40 컬럼 · 5 범주</h2>
+      <ul style={{ paddingLeft: 18, margin: 0, fontFamily: 'JetBrains Mono', fontSize: 11 }}>
+        <li>arc — 용접전류/전압/아크율 등</li>
+        <li>seam — X·Z 오프셋, BR+/TL−</li>
+        <li>pose — TCP 위치, 조인트 각도</li>
+        <li>status — ON/OFF 플래그</li>
+        <li>meta — 카운터/레지스터</li>
+      </ul>
+    </div>
+  );
+}
+
+function VariantComparison() {
+  return (
+    <div style={{
+      padding: 24,
+      background: '#fafaf8',
+      width: '100%', height: '100%',
+      fontFamily: 'Pretendard, sans-serif',
+      color: '#2a251f',
+      fontSize: 12,
+      lineHeight: 1.5,
+      overflow: 'auto',
+    }}>
+      <div style={{
+        fontFamily: 'JetBrains Mono', fontSize: 10,
+        color: '#9a8f80', letterSpacing: 1.4, marginBottom: 4,
+      }}>COMPARISON</div>
+      <h2 style={{ margin: '0 0 16px', fontSize: 18, fontWeight: 600 }}>시안별 강점</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {[
+          ['① 보수적', '#ff6b35', '실시간/분석 모두 한 화면. SCADA 익숙한 작업자에게 학습곡선 가장 낮음. 알람 패널이 우측 고정.', '많은 정보가 한 번에 보임 / 깊은 비교는 약함'],
+          ['② 표준', '#22d3ee', '브러시 윈도우로 구간 선택 → 그 구간만 상세 차트 + 스캐터 상관관계 + 통계 자동 계산. 분석 워크플로우.', '구간 비교 강력 / 처음 학습 필요'],
+          ['③ 실험적', '#a78bfa', 'A/B 두 시점 커서를 끌어 40개 변수의 변화량을 자동 정렬. 스펙트럼 뷰로 한눈에 이상 감지.', '인사이트 빠름 / 관습에서 멀음'],
+        ].map(([t, c, body, tradeoff]) => (
+          <div key={t} style={{
+            padding: 12,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderLeft: `3px solid ${c}`,
+          }}>
+            <div style={{
+              fontFamily: 'JetBrains Mono', fontSize: 11,
+              color: c, fontWeight: 600, marginBottom: 4,
+            }}>{t}</div>
+            <div style={{ marginBottom: 6 }}>{body}</div>
+            <div style={{ fontSize: 11, color: '#8a7e6e' }}>
+              {tradeoff}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NextSteps() {
+  return (
+    <div style={{
+      padding: 24,
+      background: '#fafaf8',
+      width: '100%', height: '100%',
+      fontFamily: 'Pretendard, sans-serif',
+      color: '#2a251f',
+      fontSize: 12,
+      lineHeight: 1.6,
+      overflow: 'auto',
+    }}>
+      <div style={{
+        fontFamily: 'JetBrains Mono', fontSize: 10,
+        color: '#9a8f80', letterSpacing: 1.4, marginBottom: 4,
+      }}>NEXT</div>
+      <h2 style={{ margin: '0 0 12px', fontSize: 18, fontWeight: 600 }}>다음 단계</h2>
+      <ol style={{ paddingLeft: 18, margin: 0 }}>
+        <li>방향 결정 — 어떤 시안을 베이스로 갈지 또는 어떤 요소를 섞을지</li>
+        <li>실시간 모니터링 화면 별도 설계 — 시안 ①에 포함된 Modbus 타일을 풀스크린 SCADA 모드로 분리</li>
+        <li>레코딩 목록 화면 — 과거 레코딩 라이브러리 + 메타데이터 (블록 ID, 작업자, 시작/종료)</li>
+        <li>알람 임계값 설정 UI — 추후 단계</li>
+        <li>실제 데이터 연동 — visualization5.py 데이터 파이프라인 끼우기</li>
+        <li>다중 레코딩 오버레이 — "어제 vs 오늘" 같은 비교</li>
+      </ol>
+      <div style={{
+        marginTop: 16, padding: 12,
+        background: '#fff5ee',
+        border: '1px solid #ffd5b8',
+        fontSize: 11, lineHeight: 1.5,
+      }}>
+        <b>참고</b> — 디자인 캔버스 우상단 ⛶ 버튼으로 시안을 전체화면으로 볼 수 있음.
+        Tweaks 토글로 컬러 테마를 즉시 바꿔 모든 시안에 일괄 반영됨.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

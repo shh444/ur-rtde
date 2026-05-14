@@ -1,0 +1,12 @@
+{
+  "name": "0429_welding_VR1_1th",
+  "cell": "VR1",
+  "weld_on": "불명",
+  "note": "Test",
+  "alarms": 0,
+  "startedAt": "2026-05-13 17:46:07",
+  "samples": 15730,
+  "imported": true,
+  "loadedFrom": "C:\\HesuWork\\07. TechSupport_Area (SharePoint)\\11. Project\\Hyundai Welding\\gitlab_final\\Hyundai_Samho\\RTDE\\RTDE_NEW\\ur-rtde\\csvs\\0429_welding_VR1_1th.csv",
+  "originalFilename": "0429_welding_VR1_1th.csv"
+}

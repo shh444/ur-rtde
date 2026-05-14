@@ -156,12 +156,18 @@ class DashboardService:
         history_seconds: float = DEFAULT_HISTORY_SECONDS,
         history_sample_hz: float = DEFAULT_HISTORY_SAMPLE_HZ,
         robot_model: str = DEFAULT_ROBOT_MODEL,
+        field_aliases: Optional[Dict[str, str]] = None,
     ):
         self.base_dir = Path(base_dir)
         self.recordings_dir = self.base_dir / "recordings"
         self.exports_dir = self.base_dir / "exports"
         self.recordings_dir.mkdir(parents=True, exist_ok=True)
         self.exports_dir.mkdir(parents=True, exist_ok=True)
+
+        # gp_mapping.yaml 에서 들어온 "raw 레지스터 → 친숙한 컬럼명" 매핑.
+        # RTDE 프레임 조회는 raw 이름으로 하되, CSV 헤더/DB payload 키만 친숙한
+        # 이름으로 바꿔서 내보냄. 매핑이 없는 필드는 raw 이름 그대로 노출.
+        self.field_aliases: Dict[str, str] = dict(field_aliases or {})
 
         self.host = str(host)
         self.frequency_hz = float(frequency_hz)
@@ -194,6 +200,14 @@ class DashboardService:
         self._recording_path: Optional[Path] = None
         self._recording_rows = 0
         self._latest_export_path: Optional[Path] = None
+        # DB 듀얼 쓰기 관련 — 라이브 레코딩 중 frame 을 버퍼링했다가 batch 로 flush
+        # (125Hz × INSERT-each 는 commit 오버헤드가 큼). DB 미초기화/실패는 silent —
+        # CSV 가 1차 안전망이므로 라이브 캡처 자체는 절대 중단하지 않음.
+        self._db_recording_id: Optional[int] = None
+        self._db_sample_buffer: List[Dict[str, Any]] = []
+        self._db_last_flush_monotonic: float = 0.0
+        self._db_flush_max_rows = 100        # 100 프레임 ≈ 0.8s @125Hz
+        self._db_flush_max_interval_s = 1.0  # 또는 1초마다 무조건 flush
 
         self._history_maxlen = max(200, int(self.history_seconds * self.history_sample_hz) + 5)
         self._history_joint_deg: List[Deque[List[float]]] = [deque(maxlen=self._history_maxlen) for _ in range(6)]
@@ -233,6 +247,23 @@ class DashboardService:
     def live_state(self) -> Dict[str, Any]:
         snapshot = self._snapshot_state(include_history=False, include_events=False)
         return self._build_payload_from_snapshot(snapshot, include_history=False, include_events=False, include_catalog=False, include_latest=True)
+
+    def reconfigure_host(self, host: str) -> Dict[str, Any]:
+        """런타임에 RTDE 호스트 변경. 동작 중이었으면 자동 재시작.
+        Modbus ConnectionBar 가 IP 를 바꿀 때 RTDE 도 같이 따라가게 하기 위한 진입점."""
+        host = str(host).strip()
+        if not host:
+            raise HTTPException(status_code=400, detail="host required")
+        with self._lock:
+            if host == self.host:
+                return self.state()
+            self.host = host
+            running = self._running
+            self._last_error = None
+            self._log("info", f"RTDE host changed to {host}")
+        if running:
+            self.restart()
+        return self.state()
 
     def update_config(
         self,
@@ -663,9 +694,12 @@ class DashboardService:
                     value = robot.read(token, value)
                 except Exception:
                     pass
+            # display: gp_mapping.json 의 친숙명. 매핑 없으면 raw token. (_build_rows 와 동일 규칙)
+            display = self.field_aliases.get(token, token)
             rows.append(
                 {
                     "token": token,
+                    "display": display,
                     "normalized": norm,
                     "value": _json_safe(value),
                     "formatted": _format_value(value),
@@ -1000,9 +1034,12 @@ class DashboardService:
             norm = normalize_token(token)
             value = frame_dict.get(norm)
             unit = self._unit_for(token, robot)
+            # display = gp_mapping.json 의 친숙명. 없으면 raw token 그대로.
+            display = self.field_aliases.get(token, token)
             rows.append(
                 {
                     "token": token,
+                    "display": display,
                     "normalized": norm,
                     "value": _json_safe(value),
                     "formatted": _format_value(value),
@@ -1025,6 +1062,11 @@ class DashboardService:
         return [{"name": name, "data": list(series)}]
 
     # ---------- Recording ----------
+    def _display_name(self, token: str) -> str:
+        """raw RTDE 필드명 → 사용자가 보는 컬럼명. gp_mapping.yaml 에 정의 안 된 건
+        그냥 raw 이름 반환."""
+        return self.field_aliases.get(token, token)
+
     def _start_recording_locked(self, label: Optional[str]) -> None:
         self._stop_recording_locked()
         stamp = datetime.now().strftime("rtde_%Y%m%d_%H%M%S")
@@ -1033,15 +1075,58 @@ class DashboardService:
         path = self.recordings_dir / f"{stamp}.csv"
         handle = path.open("w", newline="", encoding="utf-8")
         writer = csv.writer(handle)
-        writer.writerow(["frame_index", "robot_timestamp_s", "received_wall_time_s", *self.fields])
+        # CSV 헤더는 사용자 친화 이름 (예: weldCurrent). raw 레지스터명은 내부 lookup 전용.
+        display_fields = [self._display_name(f) for f in self.fields]
+        writer.writerow(["frame_index", "robot_timestamp_s", "received_wall_time_s", *display_fields])
         self._recording_active = True
         self._recording_file = handle
         self._recording_writer = writer
         self._recording_path = path
         self._recording_rows = 0
+        # DB 듀얼 쓰기 — 실패해도 CSV 캡처는 계속 진행
+        self._db_recording_id = None
+        self._db_sample_buffer = []
+        self._db_last_flush_monotonic = time.monotonic()
+        try:
+            from .db import get_db  # 지연 import — DB 모듈 결손/오류가 캡처 막지 않게
+            db = get_db(self.base_dir)
+            self._db_recording_id = db.start_recording(
+                filename=path.name,
+                started_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                # DB 의 fields_json 에도 표시명을 넣어 CSV/DB 가 일관되게 보이도록
+                fields=[self._display_name(f) for f in self.fields],
+                origin='live',
+            )
+        except Exception as exc:
+            self._log("warning", f"DB recording init failed (CSV 만 사용): {exc}")
+            self._db_recording_id = None
         self._log("info", f"Recording started: {path.name}")
 
     def _stop_recording_locked(self) -> None:
+        # 남은 DB 버퍼 flush (실패 silent — CSV 는 이미 디스크에 있음)
+        if self._db_recording_id is not None:
+            try:
+                self._db_flush_locked(force=True)
+                from .db import get_db
+                db = get_db(self.base_dir)
+                size_bytes = 0
+                if self._recording_path is not None and self._recording_path.exists():
+                    try:
+                        size_bytes = self._recording_path.stat().st_size
+                    except OSError:
+                        size_bytes = 0
+                db.finalize_recording(
+                    rec_id=self._db_recording_id,
+                    ended_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    duration_s=0,  # shipyard_app.py 가 sidecar 와 함께 update_meta 로 정확히 세팅
+                    samples_count=self._recording_rows,
+                    size_bytes=size_bytes,
+                )
+            except Exception as exc:
+                self._log("warning", f"DB finalize failed: {exc}")
+        self._db_recording_id = None
+        self._db_sample_buffer = []
+
         if self._recording_file is not None:
             try:
                 self._recording_file.close()
@@ -1058,17 +1143,54 @@ class DashboardService:
             return
         frame_dict = frame.as_dict()
         row = [frame.frame_index, frame.robot_timestamp_s, frame.received_wall_time_s]
+        payload: Dict[str, Any] = {}
         for token in self.fields:
-            norm = normalize_token(token)
+            norm = normalize_token(token)             # raw RTDE lookup
             value = frame_dict.get(norm)
+            display = self._display_name(token)       # CSV/DB 표시명
             if isinstance(value, (list, tuple, dict)):
                 row.append(json.dumps(_json_safe(value), ensure_ascii=False))
+                payload[display] = _json_safe(value)
             else:
                 row.append(value)
+                payload[display] = value
         self._recording_writer.writerow(row)
         if self._recording_file is not None:
             self._recording_file.flush()
         self._recording_rows += 1
+
+        # DB 듀얼 쓰기 — 버퍼에 적재 후 임계치 도달 시 flush
+        if self._db_recording_id is not None:
+            self._db_sample_buffer.append({
+                'frame_index': frame.frame_index,
+                'robot_ts_s': frame.robot_timestamp_s,
+                'wall_ts_s': frame.received_wall_time_s,
+                'payload': payload,
+            })
+            now = time.monotonic()
+            if (
+                len(self._db_sample_buffer) >= self._db_flush_max_rows
+                or (now - self._db_last_flush_monotonic) >= self._db_flush_max_interval_s
+            ):
+                self._db_flush_locked()
+
+    def _db_flush_locked(self, force: bool = False) -> None:
+        """버퍼된 샘플을 DB 로 flush. force=True 면 빈 버퍼도 OK. _lock 안에서 호출."""
+        if self._db_recording_id is None:
+            return
+        if not self._db_sample_buffer and not force:
+            return
+        if not self._db_sample_buffer:
+            return
+        try:
+            from .db import get_db
+            db = get_db(self.base_dir)
+            db.append_samples(self._db_recording_id, self._db_sample_buffer)
+            self._db_sample_buffer = []
+            self._db_last_flush_monotonic = time.monotonic()
+        except Exception as exc:
+            # CSV 가 1차 저장소니까 DB 가 막혀도 캡처는 계속. 다음 flush 때 재시도.
+            self._log("warning", f"DB sample flush failed (CSV 는 정상): {exc}")
 
     # ---------- Helpers ----------
     def _current_frame(self) -> Any:
