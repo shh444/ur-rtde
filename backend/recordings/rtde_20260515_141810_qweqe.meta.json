@@ -1,0 +1,19 @@
+{
+  "name": "qweqe",
+  "cell": "qwqw",
+  "weld_on": "아니오",
+  "note": "",
+  "block": "",
+  "path": "",
+  "operator": "",
+  "alarms": 0,
+  "startedAt": "2026-05-15 14:18:10",
+  "started_monotonic": 19298.843,
+  "has_modbus": true,
+  "has_logs": true,
+  "duration": 8,
+  "samples": 884,
+  "endedAt": "2026-05-15 14:18:18",
+  "modbus_rows": 33,
+  "logs_rows": 13
+}

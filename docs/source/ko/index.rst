@@ -45,12 +45,12 @@ RTDE Reference Program
 
    <div class="quick-grid">
      <a class="quick-card" href="shipyard_setup.html">
-       <strong>조선소 대시보드 셋업</strong>
-       <span>shipyard 8010 — 처음 시작하는 PC 에서 설치·실행·설정 JSON 동기화 절차.</span>
+       <strong>Shipyard Dashboard — 시작하기</strong>
+       <span>처음 PC 에서 설치·실행하고 동료와 같은 환경으로 맞추는 절차.</span>
      </a>
      <a class="quick-card" href="shipyard_guide.html">
-       <strong>조선소 대시보드 가이드</strong>
-       <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면 사용법.</span>
+       <strong>Shipyard Dashboard — 화면 가이드</strong>
+       <span>실시간 모니터링·RTDE·레코딩·분석·로봇 로그·GP 매핑 6개 화면 사용법.</span>
      </a>
      <a class="quick-card" href="getting_started.html">
        <strong>RTDE Reference 시작하기</strong>
@@ -72,7 +72,7 @@ RTDE Reference Program
 
 .. toctree::
    :maxdepth: 2
-   :caption: 조선소 대시보드 (shipyard 8010)
+   :caption: Shipyard Dashboard (8010)
 
    shipyard_setup
    shipyard_guide

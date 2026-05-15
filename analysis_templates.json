@@ -1,52 +1,40 @@
 {
   "templates": [
     {
-      "id": "user-1778805891704-svbt",
+      "id": "t_1778824190983",
       "name": "Z 아크센싱",
-      "description": "스틱아웃 유지하는 아크센싱",
-      "pinned": [
+      "pinnedRtde": [
         "StandardCurrent",
         "allIntegral"
       ],
-      "scatterX": "__timer__",
-      "scatterY": "zOffset",
-      "scatterX2": "__timer__",
-      "scatterY2": "z",
+      "pinnedMb": [],
       "detailMode": "overlay",
-      "builtin": false,
-      "createdAt": "2026-05-15T00:44:51.704Z"
+      "scatterY1": "zOffset",
+      "scatterY2": "z"
     },
     {
-      "id": "user-1778806034875-0vaf",
-      "name": "아크센싱 데이터 수집 구간",
-      "description": "PEAK_VALUE가 HIGH 일때 데이터 수집을 함",
-      "pinned": [
-        "peak_value",
-        "Arc_percent"
-      ],
-      "scatterX": "__timer__",
-      "scatterY": "ARC_T_Plus",
-      "scatterX2": "__timer__",
-      "scatterY2": "y",
-      "detailMode": "overlay",
-      "builtin": false,
-      "createdAt": "2026-05-15T00:47:14.875Z"
-    },
-    {
-      "id": "user-1778806669314-7v7b",
+      "id": "t_1778824198026",
       "name": "X 아크센싱",
-      "description": "센터 찾는 아크센싱",
-      "pinned": [
+      "pinnedRtde": [
         "BotRight_Plus",
         "TopLeft_Minus"
       ],
-      "scatterX": "__timer__",
-      "scatterY": "xOffset",
-      "scatterX2": "__timer__",
-      "scatterY2": "y",
+      "pinnedMb": [],
       "detailMode": "overlay",
-      "builtin": false,
-      "createdAt": "2026-05-15T00:57:49.314Z"
+      "scatterY1": "xOffset",
+      "scatterY2": "y"
+    },
+    {
+      "id": "t_1778824236470",
+      "name": "아크센싱 데이터수집",
+      "pinnedRtde": [
+        "peak_value",
+        "Arc_percent"
+      ],
+      "pinnedMb": [],
+      "detailMode": "overlay",
+      "scatterY1": "ARC_T_Plus",
+      "scatterY2": "y"
     }
   ],
   "deletedBuiltins": [

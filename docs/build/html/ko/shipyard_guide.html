@@ -6,10 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>조선소 대시보드 가이드 &mdash; RTDE Reference Program</title>
+  <title>Shipyard Dashboard — 화면 가이드 &mdash; RTDE Reference Program</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=4448bc75" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=c4d9f774" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="웹 인터페이스 가이드" href="dashboard_guide.html" />
-    <link rel="prev" title="RTDE 배경 설명" href="rtde_background.html" /> 
+    <link rel="next" title="시작하기" href="getting_started.html" />
+    <link rel="prev" title="Shipyard Dashboard — 시작하기" href="shipyard_setup.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,9 +61,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">RTDE Reference Program</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#id1">스크린샷</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#id2">빠른 이동</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="shipyard_setup.html">Shipyard Dashboard — 시작하기</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Shipyard Dashboard — 화면 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="getting_started.html">시작하기</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rtde_background.html">RTDE 배경 설명</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">조선소 대시보드 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dashboard_guide.html">웹 인터페이스 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="python_api.html">Python API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="troubleshooting.html">문제 해결</a></li>
@@ -90,7 +91,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">RTDE Reference Program</a></li>
-      <li class="breadcrumb-item active">조선소 대시보드 가이드</li>
+      <li class="breadcrumb-item active">Shipyard Dashboard — 화면 가이드</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/ko/shipyard_guide.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,207 +101,1007 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="id1">
-<h1>조선소 대시보드 가이드<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+  <section id="shipyard-dashboard">
+<h1>Shipyard Dashboard — 화면 가이드<a class="headerlink" href="#shipyard-dashboard" title="Link to this heading"></a></h1>
 <div class="lang-switch">
   <a href="../en/shipyard_guide.html">EN</a>
   <span class="active">KO</span>
-</div><section id="id2">
-<h2>개요<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
-<p>조선소 용접 현장에서 사용하는 shipyard 대시보드(포트 <code class="docutils literal notranslate"><span class="pre">8010</span></code>)의 화면별 기능 가이드입니다.
-레거시 통합 대시보드(<code class="docutils literal notranslate"><span class="pre">8008</span></code>, <a class="reference internal" href="dashboard_guide.html"><span class="doc">웹 인터페이스 가이드</span></a>)와는 <a href="#id3"><span class="problematic" id="id4">**</span></a>별도 프로세스/별도 포트**로 띄우며,
-동일 호스트에서 동시 운영할 수 있습니다.</p>
-<p>shipyard 대시보드는 5개의 화면으로 구성되어 있고, 각각 한 가지 목적에 집중합니다.</p>
+</div><p>브라우저에서 <code class="docutils literal notranslate"><span class="pre">http://127.0.0.1:8010</span></code> 으로 접속한 다음, 왼쪽 사이드바의 6개
+아이콘으로 화면을 오갑니다. 처음 보이는 화면은 ◉ <strong>실시간 모니터링</strong> 입니다.</p>
+<section id="id1">
+<h2>화면 한눈에 보기<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 8.0%" />
 <col style="width: 22.0%" />
-<col style="width: 25.0%" />
-<col style="width: 45.0%" />
+<col style="width: 18.0%" />
+<col style="width: 52.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>키</p></th>
 <th class="head"><p>화면</p></th>
-<th class="head"><p>데이터 출처</p></th>
-<th class="head"><p>핵심 목적</p></th>
+<th class="head"><p>무엇을 보는가</p></th>
+<th class="head"><p>언제 쓰는가</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>◉</p></td>
 <td><p>실시간 모니터링</p></td>
-<td><p>Modbus TCP (502) · WS <code class="docutils literal notranslate"><span class="pre">/ws/modbus</span></code></p></td>
-<td><p>펜던트·로봇·용접기 라이브 상태 + 로봇 IP 변경 (단일 진입점)</p></td>
+<td><p>로봇·펜던트·용접기 사이 통신</p></td>
+<td><p>작업 직전 통신 점검, 운전 중 에러 확인, 로봇 IP 변경</p></td>
 </tr>
 <tr class="row-odd"><td><p>◈</p></td>
 <td><p>RTDE 실시간</p></td>
-<td><p>RTDE (30004) · WS <code class="docutils literal notranslate"><span class="pre">/ws/live</span></code></p></td>
-<td><p>GP 레지스터 + 로봇 자세 라이브 — gp_mapping.json 정의 채널만 표시</p></td>
+<td><p>용접 전류·전압·아크율·오프셋 등 실시간 그래프</p></td>
+<td><p>용접이 정상적으로 진행되는지 라이브로 보고 싶을 때</p></td>
 </tr>
 <tr class="row-even"><td><p>▭</p></td>
 <td><p>레코딩</p></td>
-<td><p>DashboardService + SQLite <code class="docutils literal notranslate"><span class="pre">shipyard.db</span></code></p></td>
-<td><p>라이브 캡처/임포트 → CSV + 사이드카 + DB 이중 저장</p></td>
+<td><p>과거 용접 데이터 저장·관리</p></td>
+<td><p>한 번의 용접 사이클을 통째로 저장하거나, 동료의 기록을 둘러볼 때</p></td>
 </tr>
 <tr class="row-odd"><td><p>⟁</p></td>
 <td><p>분석 워크스페이스</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/recordings/{name}/data</span></code></p></td>
-<td><p>사후 차트 + 스크리닝 + 사용자 템플릿 (파일 영속화)</p></td>
+<td><p>저장된 레코딩의 사후 차트</p></td>
+<td><p>한 사이클을 끝낸 뒤 신호들을 비교·검토할 때</p></td>
 </tr>
-<tr class="row-even"><td><p>⌥</p></td>
+<tr class="row-even"><td><p>≡</p></td>
+<td><p>로봇 로그</p></td>
+<td><p>로봇이 흘려보낸 텍스트 로그</p></td>
+<td><p>에러가 났을 때 원인을 좇아갈 때, 시퀀스 진행을 따라갈 때</p></td>
+</tr>
+<tr class="row-odd"><td><p>⌥</p></td>
 <td><p>GP 매핑</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">gp_mapping.json</span></code> / <code class="docutils literal notranslate"><span class="pre">modbus_registers.json</span></code></p></td>
-<td><p>매핑·레지스터 정의 JSON 직접 편집</p></td>
+<td><p>신호 이름 매핑·레지스터 정의 편집</p></td>
+<td><p>새 신호가 추가됐을 때 친숙한 이름을 붙여줄 때 (드물게)</p></td>
 </tr>
 </tbody>
 </table>
 </section>
+<section id="id2">
+<h2>각 화면 가이드<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>◈ ~ ⌥ 화면들의 상세 본문은 후속 단계에서 차례로 채워집니다. 우선 ◉ <strong>실시간
+모니터링</strong> 부터 시작합니다.</p>
+</div>
+<section id="screen-monitoring">
+<span id="id3"></span><h3>1. 실시간 모니터링 ◉<a class="headerlink" href="#screen-monitoring" title="Link to this heading"></a></h3>
+<section id="id4">
+<h4>목적<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<p>용접기·펜던트·로봇 사이에 오가는 모든 신호를 라이브로 봅니다.
+<strong>이 화면이 “로봇이 켜져 있고 통신이 되는가” 를 보는 가장 먼저 가는 곳</strong> 입니다.</p>
+</section>
 <section id="id5">
-<h2>실행 방법<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="p">./</span><span class="n">run_shipyard</span><span class="p">.</span><span class="n">py</span>
-</pre></div>
+<h4>화면 구성<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<p>위에서 아래로 4영역으로 나뉩니다.</p>
+<section id="connection-bar">
+<h5>상단 — 연결 표시줄 (Connection Bar)<a class="headerlink" href="#connection-bar" title="Link to this heading"></a></h5>
+<p>좌측에 동그란 인디케이터와 글자 (LIVE / STALE / DOWN).</p>
+<ul class="simple">
+<li><p><strong>LIVE (녹색)</strong> — 최근 신호가 잘 들어오고 있음</p></li>
+<li><p><strong>STALE (호박색)</strong> — 몇 초 사이 신호가 안 들어옴 (네트워크 지연 가능)</p></li>
+<li><p><strong>DOWN (빨강)</strong> — 연결 끊김</p></li>
+</ul>
+<p>오른쪽에 <code class="docutils literal notranslate"><span class="pre">IP</span> <span class="pre">:</span> <span class="pre">포트</span></code> 입력 칸과 <strong>Connect</strong> 버튼이 있습니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>로봇을 바꿀 때 코드 수정 필요 없음.</strong> 이 IP 입력만 새 주소로 바꾸고
+Connect 누르면, 실시간 모니터링뿐 아니라 RTDE 실시간 화면까지 같은 로봇으로
+동시 전환됩니다.</p>
 </div>
-<p>브라우저에서 아래 주소를 엽니다.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>http://127.0.0.1:8010
-</pre></div>
+</section>
+<section id="hero-kpi">
+<h5>Hero 영역 — 핵심 라이브 KPI<a class="headerlink" href="#hero-kpi" title="Link to this heading"></a></h5>
+<p>가장 눈에 띄는 큰 박스들. 운전 중에 가장 자주 보게 되는 값들이 모여있습니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.0%" />
+<col style="width: 22.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>위치</p></th>
+<th class="head"><p>표시 내용</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>좌측 큰 박스</p></td>
+<td><p>용접 중 / 무부하</p></td>
+<td><p>현재 용접 여부. 옆에 셀(VL1 ~ HOR), 패스(2/3 같은), 모드(자동/수동) 라벨 같이 표시.</p></td>
+</tr>
+<tr class="row-odd"><td><p>가운데 큰 숫자 1</p></td>
+<td><p>현재 전류 A · 목표 전류</p></td>
+<td><p>실제로 흐르는 용접 전류 + 펜던트가 지령한 값.</p></td>
+</tr>
+<tr class="row-even"><td><p>가운데 큰 숫자 2</p></td>
+<td><p>현재 전압 V · 목표 전압</p></td>
+<td><p>실제 전압 + 펜던트 지령 전압.</p></td>
+</tr>
+<tr class="row-odd"><td><p>우측 작은 박스 4개</p></td>
+<td><p>하트비트·로봇모드·에러 코드 등</p></td>
+<td><p>통신 살아있는지(HB), UR 컨트롤러 상태, 마지막 에러 코드.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>로봇이 에러를 던지면 우측 작은 박스의 “ROBOT ERR” 가 빨갛게 변하고 코드 번호를
+보여줍니다.</strong> 예: <code class="docutils literal notranslate"><span class="pre">E121</span> <span class="pre">터치</span> <span class="pre">거리</span> <span class="pre">너무</span> <span class="pre">김</span></code> — 원인과 대처 방법은 그 박스를 클릭하면
+하단에 펼쳐집니다.</p>
 </div>
-<p>기동 시 백엔드가 자동으로 수행하는 것:</p>
-<ol class="arabic simple">
-<li><p>SQLite (<code class="docutils literal notranslate"><span class="pre">backend/data/shipyard.db</span></code>) 초기화 + 디스크 CSV 동기화</p></li>
-<li><p>Modbus 폴링 스레드 시작 (<code class="docutils literal notranslate"><span class="pre">MODBUS_POLL_HZ</span></code>, 기본 4Hz)</p></li>
-<li><p>RTDE 스트림 자동 연결 시도 — 미연결이면 백오프 재연결</p></li>
-</ol>
-<p>호스트/포트는 <code class="file docutils literal notranslate"><span class="pre">app_config.py</span></code> 의 <code class="docutils literal notranslate"><span class="pre">SHIPYARD_HOST</span></code> / <code class="docutils literal notranslate"><span class="pre">SHIPYARD_PORT</span></code> 에서 변경합니다.
-로봇 IP (<code class="docutils literal notranslate"><span class="pre">ROBOT_HOST</span></code>) 는 같은 파일의 단일 source of truth 이며,
-런타임 변경은 화면 ① 실시간 모니터링의 ConnectionBar 에서 수행합니다.</p>
 </section>
 <section id="id6">
-<h2>화면별 가이드<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-</div>
-<section id="modbus-tcp">
-<h3>1. 실시간 모니터링 (Modbus TCP)<a class="headerlink" href="#modbus-tcp" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>상세 본문은 Phase 2 에서 채워집니다.</p>
-</div>
-<dl class="simple">
-<dt>데이터 출처</dt><dd><ul class="simple">
-<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/modbus/snapshot</span></code></p></li>
-<li><p>WebSocket: <code class="docutils literal notranslate"><span class="pre">/ws/modbus</span></code> (백엔드 <code class="docutils literal notranslate"><span class="pre">ModbusService</span></code> 가 폴링한 스냅샷 push)</p></li>
-<li><p>런타임 IP 변경: <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/modbus/config</span></code> — Modbus + RTDE 양쪽에 동시 적용</p></li>
-</ul>
-</dd>
-<dt>의존 파일</dt><dd><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">modbus_registers.json</span></code> (레지스터 정의 — 저장 안 됐으면 프론트 하드코딩 기본값)</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-<section id="rtde-gp">
-<h3>2. RTDE 실시간 (GP + 자세)<a class="headerlink" href="#rtde-gp" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>상세 본문은 Phase 3 에서 채워집니다.</p>
-</div>
-<dl class="simple">
-<dt>데이터 출처</dt><dd><ul class="simple">
-<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/state</span></code>, <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/rtde/start</span></code>, <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/api/rtde/stop</span></code></p></li>
-<li><p>WebSocket: <code class="docutils literal notranslate"><span class="pre">/ws/live</span></code> (10Hz, KPI + 라이브 row) · <code class="docutils literal notranslate"><span class="pre">/ws/stream</span></code> (2Hz, 차트 + 히스토리)</p></li>
-</ul>
-</dd>
-<dt>의존 파일</dt><dd><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">gp_mapping.json</span></code> (GP register → 친숙명 alias, <code class="docutils literal notranslate"><span class="pre">frequency</span></code>)</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">app_config.py</span></code> 의 <code class="docutils literal notranslate"><span class="pre">ROBOT_FIELDS</span></code></p></li>
-</ul>
-</dd>
-</dl>
-</section>
-<section id="rtde">
-<h3>3. 레코딩 (RTDE)<a class="headerlink" href="#rtde" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>상세 본문은 Phase 4 에서 채워집니다.</p>
-</div>
-<dl class="simple">
-<dt>데이터 출처</dt><dd><ul class="simple">
-<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">GET/POST/DELETE</span> <span class="pre">/api/recordings</span></code>, <code class="docutils literal notranslate"><span class="pre">/import</span></code>, <code class="docutils literal notranslate"><span class="pre">/load-path</span></code>,
-<code class="docutils literal notranslate"><span class="pre">/{name}/data</span></code>, <code class="docutils literal notranslate"><span class="pre">/{name}/meta</span></code>, <code class="docutils literal notranslate"><span class="pre">/{name}/download</span></code></p></li>
-<li><p>저장 위치: <code class="file docutils literal notranslate"><span class="pre">backend/recordings/</span></code> (CSV + <code class="docutils literal notranslate"><span class="pre">.meta.json</span></code>) + SQLite <code class="docutils literal notranslate"><span class="pre">shipyard.db</span></code></p></li>
-</ul>
-</dd>
-</dl>
-</section>
-<section id="id7">
-<h3>4. 분석 워크스페이스 (사후 차트)<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>상세 본문은 Phase 5 에서 채워집니다.</p>
-</div>
-<dl class="simple">
-<dt>데이터 출처</dt><dd><ul class="simple">
-<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/recordings/{name}/data</span></code> (DB 1차 → CSV fallback)</p></li>
-<li><p>템플릿: <code class="docutils literal notranslate"><span class="pre">GET/POST/DELETE</span> <span class="pre">/api/analysis/templates</span></code></p></li>
-</ul>
-</dd>
-<dt>의존 파일</dt><dd><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">analysis_templates.json</span></code> (사용자 템플릿 + 숨긴 빌트인 — 파일 영속화)</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-<section id="gp-json">
-<h3>5. GP 매핑 (JSON)<a class="headerlink" href="#gp-json" title="Link to this heading"></a></h3>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>상세 본문은 Phase 6 에서 채워집니다.</p>
-</div>
-<dl class="simple">
-<dt>데이터 출처</dt><dd><ul class="simple">
-<li><p>GP 매핑: <code class="docutils literal notranslate"><span class="pre">GET/POST/DELETE</span> <span class="pre">/api/mapping</span></code></p></li>
-<li><p>Modbus 레지스터: <code class="docutils literal notranslate"><span class="pre">GET/POST/DELETE</span> <span class="pre">/api/modbus/registers</span></code></p></li>
-</ul>
-</dd>
-<dt>의존 파일</dt><dd><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">gp_mapping.json</span></code> — 변경 후 <strong>서버 재시작</strong> 시 적용</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">modbus_registers.json</span></code> — 변경 후 <strong>페이지 새로고침</strong> 시 적용</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-</section>
-<section id="id8">
-<h2>설정 파일 요약<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
-<p>세 JSON 모두 프로젝트 루트(<code class="file docutils literal notranslate"><span class="pre">ur-rtde/</span></code>)에 위치하며, git 으로 함께 관리하면
-다른 PC/브라우저에서도 동일한 상태로 시작합니다.</p>
+<h5>중간 — 그룹 탭 + 검색<a class="headerlink" href="#id6" title="Link to this heading"></a></h5>
+<p>신호들이 보내는 방향에 따라 6 그룹으로 묶여있습니다.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 28.0%" />
 <col style="width: 18.0%" />
-<col style="width: 18.0%" />
-<col style="width: 36.0%" />
+<col style="width: 54.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>그룹 (탭 라벨)</p></th>
+<th class="head"><p>주소 범위</p></th>
+<th class="head"><p>무엇을 봐야 하나</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>로봇 → 팬던트 (R→P)</p></td>
+<td><p>128 ~ 160</p></td>
+<td><p>로봇이 펜던트에게 보내는 상태 보고 (용접 여부, 전류·전압, 셀, 패스, 에러 등).</p></td>
+</tr>
+<tr class="row-odd"><td><p>팬던트 → 로봇 (P→R)</p></td>
+<td><p>161 ~ 199</p></td>
+<td><p>펜던트가 로봇에 내리는 지시 (작업 모드, 셀 선택, 치수, 옵션 비트 등).</p></td>
+</tr>
+<tr class="row-even"><td><p>로봇 → 용접기 (R→W)</p></td>
+<td><p>201 ~ 210</p></td>
+<td><p>용접기에 보내는 제어 (토치 ON/OFF, 가스체크, 전류·전압 설정 등).</p></td>
+</tr>
+<tr class="row-odd"><td><p>용접기 → 로봇 (W→R)</p></td>
+<td><p>211 ~ 220</p></td>
+<td><p>용접기가 돌려주는 피드백 (WCR 검출, 실제 전류·전압, 송급 속도 등).</p></td>
+</tr>
+<tr class="row-even"><td><p>용접 조건 (COND)</p></td>
+<td><p>221 ~ 255</p></td>
+<td><p>펜던트가 보낸 용접 파라미터 (위빙·X/Z 오프셋·각도·시작/끝 조건 등).</p></td>
+</tr>
+<tr class="row-odd"><td><p>UR 빌트인 (UR)</p></td>
+<td><p>258 이상</p></td>
+<td><p>UR 컨트롤러 표준 상태 (Robot mode 등).</p></td>
+</tr>
+</tbody>
+</table>
+<p>오른쪽에 검색창이 있어서 주소(예: <code class="docutils literal notranslate"><span class="pre">131</span></code>) 또는 한글/영문 이름(예: <code class="docutils literal notranslate"><span class="pre">전류</span></code>, <code class="docutils literal notranslate"><span class="pre">current</span></code>)
+으로 바로 찾을 수 있습니다.</p>
+</section>
+<section id="id7">
+<h5>본문 — 레지스터 그리드<a class="headerlink" href="#id7" title="Link to this heading"></a></h5>
+<p>선택된 그룹의 신호들이 격자로 펼쳐집니다. 각 카드는:</p>
+<ul class="simple">
+<li><p>주소 번호 + 이름</p></li>
+<li><p>현재 값 + 단위</p></li>
+<li><p>작은 스파크라인 (지난 60초 동안의 변화)</p></li>
+<li><p>좌측에 색 띠 (그룹 색)</p></li>
+</ul>
+<p>카드를 <strong>클릭하면</strong> 우측에 상세 패널이 열립니다. 거기서 볼 수 있는 정보:</p>
+<ul class="simple">
+<li><p><strong>의미(decode)</strong> — 예를 들어 비트필드면 비트별 ON/OFF, enum 이면 라벨,
+에러 코드면 원인·조치 텍스트.</p></li>
+<li><p><strong>단위·범위·스케일</strong> — 펜던트가 보낸 값과 실제 값의 환산 규칙.</p></li>
+<li><p><strong>히스토리</strong> — 최근 약 1분간의 값 추이.</p></li>
+</ul>
+<p>체크박스 “예약/미사용 표시” 를 켜면 작업 시트의 공란(Reserved) 까지 같이 보입니다.
+기본은 끔 — 사용 중인 활성 신호만 표시.</p>
+</section>
+</section>
+<section id="id8">
+<h4>자주 하는 일<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>다른 로봇으로 전환하기</strong></dt><dd><p>상단 IP 입력 → 새 IP 타이핑 → <strong>Connect</strong> 클릭. 모든 화면이 그 로봇으로 따라
+움직입니다 (RTDE 실시간 포함).</p>
+</dd>
+<dt><strong>작업 직전 통신 점검</strong></dt><dd><ol class="arabic simple">
+<li><p>인디케이터가 LIVE 인지</p></li>
+<li><p>ROBOT HB / PEND HB 두 작은 박스의 숫자가 1초마다 올라가는지</p></li>
+<li><p>ROBOT ERR 가 0 인지</p></li>
+</ol>
+</dd>
+<dt><strong>에러 원인 좇기</strong></dt><dd><p>ROBOT ERR 박스 클릭 → 우측 상세 패널의 “원인” 과 “조치” 텍스트 확인. 예를
+들어 <code class="docutils literal notranslate"><span class="pre">E131</span> <span class="pre">WCR</span> <span class="pre">신호</span> <span class="pre">부재</span></code> 는 “1) 용접기 확인  2) 접지 확인” 처럼 다음 단계가
+적혀있습니다.</p>
+</dd>
+<dt><strong>특정 셀의 패스 상황 확인</strong></dt><dd><p>① Hero 의 셀 라벨이 현재 작업 셀(예: VR1) 인지
+② 옆 “패스” 라벨이 <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">/</span> <span class="pre">3</span></code> 같이 진행 상태 표시
+③ 더 자세히 보려면 검색창에 <code class="docutils literal notranslate"><span class="pre">138</span></code> (전체 중 현재 PATH) 입력 후 카드 클릭</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h4>이런 경우 어떻게 하나<a class="headerlink" href="#id9" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>모든 값이 0 / 안 변함</strong></dt><dd><p>인디케이터가 DOWN 또는 STALE 인지부터 확인. DOWN 이면 IP/네트워크 문제, STALE 이면
+잠시 기다려보고 그래도 회복 안 되면 Connect 다시.</p>
+</dd>
+<dt><strong>특정 신호만 0 으로 멈춰있음</strong></dt><dd><p>카드 클릭 → 상세 패널의 “상태(status)” 가 “예약(reserved)” 또는 “미사용(unused)”
+인지 확인. 작업 시트상 정의되지 않은 슬롯일 수 있습니다.</p>
+</dd>
+<dt><strong>Hero 의 셀 라벨이 비어 있음</strong></dt><dd><p>펜던트가 아직 셀을 선택하지 않은 상태. 펜던트에서 셀을 고르면 즉시 반영됩니다.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="rtde">
+<span id="screen-rtde"></span><h3>2. RTDE 실시간 ◈<a class="headerlink" href="#rtde" title="Link to this heading"></a></h3>
+<section id="id10">
+<h4>목적<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<p>용접이 진행되는 동안 <strong>실제 전류·전압·아크율·시임 오프셋이 어떻게 움직이는지</strong>
+숫자와 그래프로 동시에 봅니다.</p>
+<p>화면 ◉ 와의 차이점: 그쪽은 펜던트·용접기·로봇 사이의 <em>통신 신호</em> 를, 여기는
+URScript 가 매 사이클마다 보내주는 <em>측정값</em> 을 봅니다. 그래서 ◈ 의 업데이트
+주기가 훨씬 빠르고 (보통 약 100ms 단위), 차트가 자연스럽게 흐릅니다.</p>
+</section>
+<section id="id11">
+<h4>화면 구성<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+<section id="id12">
+<h5>상단 — 상태 표시줄<a class="headerlink" href="#id12" title="Link to this heading"></a></h5>
+<p>좌측에 LIVE / STALE / DOWN 인디케이터, 가운데에 <code class="docutils literal notranslate"><span class="pre">LIVE</span> <span class="pre">·</span> <span class="pre">125Hz</span></code> 처럼 실제
+수신 속도, 우측에 <strong>재시작</strong> 버튼.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>여기엔 <strong>IP 입력 칸이 없습니다.</strong> 로봇 IP 변경은 항상 화면 ◉ <strong>실시간 모니터링</strong>
+의 ConnectionBar 한 곳에서 합니다. 그쪽에서 바꾸면 이 화면의 RTDE 도 함께 따라
+움직입니다.</p>
+</div>
+<p>수동 재시작 버튼은 RTDE 만 끊어졌을 때 (◉ Modbus 는 살아있는데 여기만 STALE)
+한 번씩 누르는 용도입니다.</p>
+</section>
+<section id="hero-strip-kpi">
+<h5>Hero Strip — 가장 자주 보는 KPI<a class="headerlink" href="#hero-strip-kpi" title="Link to this heading"></a></h5>
+<p>상단에 큰 패널 한 줄로 핵심 5종이 묶여있습니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 22.0%" />
+<col style="width: 56.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>위치</p></th>
+<th class="head"><p>채널</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>좌측 큰 박스</p></td>
+<td><p>용접 ON/OFF</p></td>
+<td><p>현재 아크 여부. 큰 색깔 라벨로 “용접 중” 또는 “대기”.</p></td>
+</tr>
+<tr class="row-odd"><td><p>가운데 큰 숫자 1</p></td>
+<td><p>용접 전류 (A)</p></td>
+<td><p>URScript 가 보낸 실제 전류값.</p></td>
+</tr>
+<tr class="row-even"><td><p>가운데 큰 숫자 2</p></td>
+<td><p>용접 전압 (V)</p></td>
+<td><p>실제 용접 전압.</p></td>
+</tr>
+<tr class="row-odd"><td><p>가운데 큰 숫자 3</p></td>
+<td><p>아크율 (%)</p></td>
+<td><p>단위 시간 중 안정 아크 비율.</p></td>
+</tr>
+<tr class="row-even"><td><p>우측 작은 박스들</p></td>
+<td><p>기준 전류 · X 오프셋 · Z 오프셋 · Peak 값 · 적분합</p></td>
+<td><p>시임 트래킹 보정 / 안정도 지표.</p></td>
+</tr>
+</tbody>
+</table>
+<p>각 박스 아래 작은 <strong>스파크라인</strong> 으로 최근 약 24초의 변화 추이가 함께 보입니다.</p>
+</section>
+<section id="id13">
+<h5>탭 + 검색<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
+<p>세 탭으로 채널을 묶어 보여줍니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 22.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>탭</p></th>
+<th class="head"><p>색</p></th>
+<th class="head"><p>포함 채널 예</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>전체</p></td>
+<td><p>회색</p></td>
+<td><p>매핑된 모든 채널을 신호 번호 순으로 한 줄로 보여줌</p></td>
+</tr>
+<tr class="row-odd"><td><p>용접 텔레메트리</p></td>
+<td><p>노란색</p></td>
+<td><p>용접 전류·전압, 아크율, 적분합, Peak 값, WCR 입력, 용접 ON/OFF 등</p></td>
+</tr>
+<tr class="row-even"><td><p>시임 추적</p></td>
+<td><p>청록색</p></td>
+<td><p>X/Z 오프셋, X·Z Up/Ui, BR+/TL−, 터치 ON/OFF, Tri count, X/Y/Z 위치 등</p></td>
+</tr>
+</tbody>
+</table>
+<p>오른쪽 검색창에 채널 이름(예: <code class="docutils literal notranslate"><span class="pre">arc</span></code>, <code class="docutils literal notranslate"><span class="pre">오프셋</span></code>, <code class="docutils literal notranslate"><span class="pre">BotRight</span></code>) 일부만 쳐도
+실시간으로 카드가 필터링됩니다.</p>
+</section>
+<section id="id14">
+<h5>본문 — 채널 카드 그리드<a class="headerlink" href="#id14" title="Link to this heading"></a></h5>
+<p>카드 한 장이 신호 하나입니다. 카드에 표시되는 것:</p>
+<ul class="simple">
+<li><p>친숙한 이름 (예: <code class="docutils literal notranslate"><span class="pre">용접</span> <span class="pre">전류</span></code> · 영문 alias <code class="docutils literal notranslate"><span class="pre">weldCurrent</span></code>)</p></li>
+<li><p>현재 값 + 단위 (예: <code class="docutils literal notranslate"><span class="pre">238.4</span> <span class="pre">A</span></code>)</p></li>
+<li><p>작은 스파크라인 (최근 약 24초)</p></li>
+<li><p>좌측 색 띠 (용접/시임 그룹 구분)</p></li>
+</ul>
+<p><strong>클릭하면</strong> 우측 패널이 열리고:</p>
+<ul class="simple">
+<li><p><strong>큰 차트</strong> — 더 긴 시간축으로 추이를 자세히</p></li>
+<li><p><strong>현재 값 / 최근 평균 / 최소·최대</strong> 같은 요약 숫자</p></li>
+<li><p><strong>채널 이름과 번호</strong> (<code class="docutils literal notranslate"><span class="pre">output_double_register_3</span></code> → <code class="docutils literal notranslate"><span class="pre">용접</span> <span class="pre">전류</span></code>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>gp_mapping.json 의 alias 가 없는 신호 (예: 로봇 자세, 타임스탬프, raw GP 레지스터)
+는 이 화면에 <strong>표시되지 않습니다.</strong> 매핑되지 않은 신호도 보고 싶다면 ⌥ <strong>GP 매핑</strong>
+화면에서 alias 를 추가하세요. (단, 그 후 대시보드 재시작 필요)</p>
+</div>
+</section>
+</section>
+<section id="id15">
+<h4>자주 하는 일<a class="headerlink" href="#id15" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>용접 시작 직전 영점 점검</strong></dt><dd><ul class="simple">
+<li><p>좌측 큰 박스가 “대기” 인지</p></li>
+<li><p>용접 전류·전압이 0 근처인지</p></li>
+<li><p>X / Z 오프셋이 0 또는 직전 보정값에 가까운지</p></li>
+</ul>
+</dd>
+<dt><strong>용접 중 안정도 확인</strong></dt><dd><ul class="simple">
+<li><p>Hero 의 아크율(%) 이 흔들리지 않고 일정 수준 유지되는지</p></li>
+<li><p>용접 전류·전압이 펜던트 지령값 근처에서 안정적으로 진동하는지</p></li>
+<li><p>적분합(allIntegral) 이 정상 증가 패턴을 보이는지</p></li>
+</ul>
+</dd>
+<dt><strong>시임 트래킹 보정 확인</strong></dt><dd><ul class="simple">
+<li><p>“시임 추적” 탭 클릭</p></li>
+<li><p>X 오프셋이 ±5mm 범위 안인지</p></li>
+<li><p>BR+ / TL− 두 채널이 균형 잡혀 있는지 (한쪽만 크게 튀면 토치 각도 의심)</p></li>
+<li><p>X 위치 / Y 위치 / Z 위치 카드로 현재 위치 추적</p></li>
+</ul>
+</dd>
+<dt><strong>한 채널을 깊게 보기</strong></dt><dd><p>카드 클릭 → 우측 큰 차트 패널에서 시간축을 길게 봅니다. 평균·최소·최대 숫자도
+같이 보여줘서 정상 범위 감을 잡을 때 좋습니다.</p>
+</dd>
+</dl>
+</section>
+<section id="id16">
+<h4>이런 경우 어떻게 하나<a class="headerlink" href="#id16" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>카드가 하나도 안 보인다 (그리드가 비어 있음)</strong></dt><dd><p>매핑이 안 된 상태입니다. <code class="docutils literal notranslate"><span class="pre">gp_mapping.json</span></code> 이 누락되었거나 깨져 있을 수
+있습니다. ⌥ <strong>GP 매핑</strong> 화면에서 현재 상태 확인 → 동료 PC 의 파일로 복구.</p>
+</dd>
+<dt><strong>LIVE 인데 모든 카드의 값이 0</strong></dt><dd><p>대시보드 ↔ 로봇 RTDE 연결은 살아있지만 URScript 가 register 에 값을 안
+채우고 있는 상태입니다. 펜던트에서 용접 프로그램이 실행 중인지 먼저 확인.</p>
+</dd>
+<dt><strong>상단이 STALE / 빨간 점</strong></dt><dd><p>RTDE 만 끊긴 경우. 상단 우측 <strong>재시작</strong> 버튼을 한 번 누르거나, ◉ 실시간
+모니터링으로 가서 IP 가 맞는지부터 확인하세요.</p>
+</dd>
+<dt><strong>용접은 중인데 좌측 큰 박스가 “대기” 로 표시</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">weldingOnOff</span></code> 채널(<code class="docutils literal notranslate"><span class="pre">output_double_register_18</span></code>) 이 URScript 에서 1로
+설정되지 않은 경우. URScript 측 매핑 확인 필요.</p>
+</dd>
+<dt><strong>카드 너무 많아서 원하는 거 못 찾겠다</strong></dt><dd><ul class="simple">
+<li><p>“전체” 탭 대신 “용접 텔레메트리” 또는 “시임 추적” 으로 좁히기</p></li>
+<li><p>검색창에 한글 일부 (<code class="docutils literal notranslate"><span class="pre">오프셋</span></code>, <code class="docutils literal notranslate"><span class="pre">전류</span></code>) 또는 영문 alias 일부 (<code class="docutils literal notranslate"><span class="pre">arc</span></code>, <code class="docutils literal notranslate"><span class="pre">peak</span></code>) 입력</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="screen-recordings">
+<span id="id17"></span><h3>3. 레코딩 ▭<a class="headerlink" href="#screen-recordings" title="Link to this heading"></a></h3>
+<section id="id18">
+<h4>목적<a class="headerlink" href="#id18" title="Link to this heading"></a></h4>
+<p>한 번의 용접 사이클을 통째로 저장해두고, 나중에 차트로 다시 들여다볼 수 있게
+합니다. 라이브 캡처와 외부 CSV 임포트 두 경로가 있고, 저장된 항목은 모두 한
+라이브러리에 모입니다.</p>
+</section>
+<section id="id19">
+<h4>화면 구성<a class="headerlink" href="#id19" title="Link to this heading"></a></h4>
+<p>화면이 두 영역으로 나뉩니다.</p>
+<section id="id20">
+<h5>상단 — 새 레코딩 / 라이브 레코딩<a class="headerlink" href="#id20" title="Link to this heading"></a></h5>
+<p><strong>라이브 레코딩이 진행 중이 아닐 때</strong> 는 3가지 시작 카드가 보입니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 78.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>시작 방법</p></th>
+<th class="head"><p>용도</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>새 레코딩</strong></p></td>
+<td><p>지금부터 RTDE 신호를 실시간으로 받아 CSV 로 저장. 가장 흔히 쓰는 방법.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>CSV 임포트</strong></p></td>
+<td><p>다른 PC 에서 만든 CSV 파일을 브라우저로 업로드해 라이브러리에 추가.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>경로에서 로드</strong></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">csvs/</span></code> 폴더에 미리 떨궈둔 파일을 골라서 가져오기. 브라우저 업로드가
+막힌 보안 환경용.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>라이브 레코딩 중일 때</strong> 는 큰 빨간 패널이 떠서:</p>
+<ul class="simple">
+<li><p>깜빡이는 LIVE 인디케이터 + 파일명</p></li>
+<li><p>부제로 NAME · 셀 · 용접 여부</p></li>
+<li><p>큰 글씨로 경과 시간 (<code class="docutils literal notranslate"><span class="pre">MM:SS</span></code>)</p></li>
+<li><p>샘플 수 + 누적 크기 (MB)</p></li>
+<li><p>캡처 중인 라이브 값 6개 미니 박스</p></li>
+<li><p>우측 빨간 <strong>■ 정지 및 저장</strong> 버튼</p></li>
+</ul>
+</section>
+<section id="id21">
+<h5>하단 — 레코딩 라이브러리<a class="headerlink" href="#id21" title="Link to this heading"></a></h5>
+<p>헤더에 “레코딩 라이브러리 · <em>N</em> 항목 · 사용량” 이 표시되고, 그 옆에 필터 탭이
+있습니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.0%" />
+<col style="width: 74.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>탭</p></th>
+<th class="head"><p>보이는 것</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>전체</p></td>
+<td><p>DB·파일 시스템 모두</p></td>
+</tr>
+<tr class="row-odd"><td><p>파일 시스템</p></td>
+<td><p>디스크 CSV 만 (DB 에 안 들어간 상태 — 보통 외부에서 떨궈진 파일)</p></td>
+</tr>
+<tr class="row-even"><td><p>데이터베이스</p></td>
+<td><p>SQLite 인덱스에 등록된 항목 (라이브 캡처·임포트는 모두 여기로 들어감)</p></td>
+</tr>
+</tbody>
+</table>
+<p>오른쪽 검색창에서 <strong>블록 / 작업자 / 파일명</strong> 일부로 즉시 필터링.</p>
+</section>
+<section id="id22">
+<h5>각 행에 표시되는 정보 (왼쪽부터)<a class="headerlink" href="#id22" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14.0%" />
+<col style="width: 86.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>컬럼</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SRC</p></td>
+<td><p>출처 배지. <strong>DB</strong> (라이브/임포트로 정식 등록) · <strong>FILE</strong> (디스크에만 있는 CSV) · <strong>IMP</strong> (외부에서 임포트된 항목)</p></td>
+</tr>
+<tr class="row-odd"><td><p>FILE / ID</p></td>
+<td><p>파일명 + 그 아래 작은 글씨로 시작 시각 / 메모</p></td>
+</tr>
+<tr class="row-even"><td><p>NAME</p></td>
+<td><p>레코딩 생성 시 입력한 이름 (예: <code class="docutils literal notranslate"><span class="pre">0429_welding_VR1_1th</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CELL</p></td>
+<td><p>작업 셀 (VL1 / VL2 / VR1 / VR2 / HOR)</p></td>
+</tr>
+<tr class="row-even"><td><p>WELD</p></td>
+<td><p>실제 용접 여부 (예 / 아니오 / 불명)</p></td>
+</tr>
+<tr class="row-odd"><td><p>DURATION</p></td>
+<td><p>캡처 길이 (<code class="docutils literal notranslate"><span class="pre">MM:SS</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>SAMPLES</p></td>
+<td><p>저장된 프레임 수 (125Hz 기준 1분 = 약 7,500)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SIZE</p></td>
+<td><p>파일 크기</p></td>
+</tr>
+<tr class="row-even"><td><p>ALARM</p></td>
+<td><p>캡처 동안 발생한 알람 개수 (0 녹색 · 1~5 호박색 · 6+ 빨강)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACTIONS</p></td>
+<td><p><strong>[분석 열기]</strong> / <strong>⤓</strong> 다운로드 / <strong>×</strong> 삭제</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="id23">
+<h4>새 레코딩 시작 절차<a class="headerlink" href="#id23" title="Link to this heading"></a></h4>
+<ol class="arabic simple">
+<li><p>상단의 <strong>새 레코딩</strong> 카드 클릭 → 메타데이터 다이얼로그</p></li>
+<li><p><strong>NAME</strong> 입력 — 파일명에 그대로 반영됩니다 (예: <code class="docutils literal notranslate"><span class="pre">12-3F-VL2-test</span></code> →
+<code class="docutils literal notranslate"><span class="pre">rtde_20260515_103214_12-3F-VL2-test.csv</span></code>)</p></li>
+<li><p><strong>셀</strong> 입력 (예: <code class="docutils literal notranslate"><span class="pre">VL2</span></code>)</p></li>
+<li><p><strong>실제 용접 여부</strong> 선택 (예 / 아니오 / 불명) — 통계용</p></li>
+<li><p><strong>메모</strong> — 작업 조건·관찰사항·이상 징후를 자유롭게. 사후 분석할 때 가장
+요긴한 정보입니다.</p></li>
+<li><p>다이얼로그 하단에 <strong>파일명 미리보기</strong> 가 실시간으로 떠서 최종 이름 확인 가능</p></li>
+<li><p><strong>● 시작</strong> → 빨간 라이브 패널로 전환</p></li>
+<li><p>작업 끝나면 <strong>■ 정지 및 저장</strong> → 라이브러리 첫 줄에 새 항목이 즉시 추가</p></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>NAME 에 사용할 수 없는 문자(공백, 특수기호 등) 는 자동으로 <code class="docutils literal notranslate"><span class="pre">_</span></code> 로 바뀝니다.
+다이얼로그 하단에 <code class="docutils literal notranslate"><span class="pre">⚠</span> <span class="pre">NAME</span> <span class="pre">에서</span> <span class="pre">사용</span> <span class="pre">불가능한</span> <span class="pre">문자는</span> <span class="pre">_로</span> <span class="pre">변환됩니다</span></code> 알림이
+뜨면, 미리보기 파일명을 확인하고 원하는 형태인지 점검하세요.</p>
+</div>
+</section>
+<section id="csv">
+<h4>CSV 임포트<a class="headerlink" href="#csv" title="Link to this heading"></a></h4>
+<p>다른 PC 에서 만든 CSV 를 가져올 때 두 가지 경로가 있습니다.</p>
+<dl class="simple">
+<dt><strong>일반 환경 — 브라우저 업로드</strong></dt><dd><p>상단 <strong>CSV 임포트</strong> → CSV 파일 선택 → NAME·셀·용접 여부·메모 입력 → 추가.
+파일은 자동으로 <code class="docutils literal notranslate"><span class="pre">rtde_YYYYMMDD_HHMMSS_&lt;NAME&gt;.csv</span></code> 형식으로 저장됩니다.</p>
+</dd>
+<dt><strong>브라우저 업로드가 막힌 환경 — csvs/ 폴더</strong></dt><dd><ol class="arabic simple">
+<li><p>USB·공유 폴더 등으로 CSV 를 프로젝트 루트의 <code class="docutils literal notranslate"><span class="pre">csvs/</span></code> 폴더에 떨궈둡니다.</p></li>
+<li><p>상단 <strong>경로에서 로드</strong> → 그 폴더 목록이 다이얼로그에 뜸</p></li>
+<li><p>파일 선택 + 메타 입력 → 추가</p></li>
+<li><p><strong>복사 / 이동</strong> 토글로 원본 보존 여부 선택</p></li>
+</ol>
+</dd>
+</dl>
+</section>
+<section id="id24">
+<h4>레코딩 다루기<a class="headerlink" href="#id24" title="Link to this heading"></a></h4>
+<dl>
+<dt><strong>분석 열기</strong></dt><dd><p>행의 <strong>[분석 열기]</strong> 클릭 → 화면 ⟁ <strong>분석 워크스페이스</strong> 로 자동 전환되며 그
+레코딩이 활성화됩니다. 같은 행에서 다시 누르면 “열림” 으로 표시.</p>
+</dd>
+<dt><strong>다운로드</strong></dt><dd><p><strong>⤓</strong> 클릭 → 브라우저가 즉시 원본 CSV 를 다운로드. 백업·외부 공유용.</p>
+</dd>
+<dt><strong>삭제</strong></dt><dd><p><strong>×</strong> 클릭 → 확인 다이얼로그 → CSV 파일 + 사이드카 + DB 기록 모두 제거되며
+되돌릴 수 없습니다.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>라이브 레코딩 중인 파일은 삭제할 수 없습니다 (“현재 라이브 레코딩 중인
+파일입니다. 먼저 중지하세요.” 알림). 안전장치입니다.</p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h4>자주 하는 일<a class="headerlink" href="#id25" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>용접 1 사이클 캡처</strong></dt><dd><p>준비 → <strong>새 레코딩</strong> → 메타 입력 → 시작 → 용접 완료 후 정지.</p>
+</dd>
+<dt><strong>과거 레코딩 다시 보기</strong></dt><dd><p>라이브러리에서 검색창에 셀명·NAME·날짜 키워드 입력 → <strong>분석 열기</strong>.</p>
+</dd>
+<dt><strong>문제 레코딩 백업 후 정리</strong></dt><dd><p>알람 개수가 빨간 항목 → <strong>⤓</strong> 다운로드로 외부 보관 → <strong>×</strong> 로 삭제.</p>
+</dd>
+<dt><strong>다른 PC 로 옮긴 파일 가져오기</strong></dt><dd><p>같은 PC 라면 <strong>CSV 임포트</strong> 한 번. 보안 환경이라면 USB로 <code class="docutils literal notranslate"><span class="pre">csvs/</span></code> 에 넣고
+<strong>경로에서 로드</strong>.</p>
+</dd>
+</dl>
+</section>
+<section id="id26">
+<h4>이런 경우 어떻게 하나<a class="headerlink" href="#id26" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>■ 정지 및 저장 후 라이브러리 첫 줄에 항목이 안 보임</strong></dt><dd><p>잠시 후 새로고침 또는 화면 전환 후 복귀. 정상이면 즉시 보입니다. 그래도
+없으면 RTDE 가 STALE 상태였는지 (◈ 화면) 점검 — 정지 시점 직전까지 프레임이
+안 들어왔으면 빈 캡처일 수 있습니다.</p>
+</dd>
+<dt><strong>캡처는 됐는데 SAMPLES 가 0</strong></dt><dd><p>RTDE 연결 자체는 살아있었지만 URScript 가 register 에 값을 안 채웠거나
+프로그램 미실행 상태. ◈ 화면에서 값이 흐르고 있는지 먼저 확인.</p>
+</dd>
+<dt><strong>다운로드 버튼을 눌렀는데 응답 없음</strong></dt><dd><p>해당 행의 SRC 가 <strong>FILE</strong> 인데 실제 디스크에서 파일이 사라진 경우. <code class="docutils literal notranslate"><span class="pre">×</span></code> 로
+행을 정리하세요.</p>
+</dd>
+<dt><strong>×를 누르면 “현재 라이브 레코딩 중” 오류</strong></dt><dd><p>해당 파일이 지금 캡처 중인 파일과 같다는 뜻. 먼저 <strong>■ 정지 및 저장</strong> 후 다시
+삭제 시도.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="screen-analysis">
+<span id="id27"></span><h3>4. 분석 워크스페이스 ⟁<a class="headerlink" href="#screen-analysis" title="Link to this heading"></a></h3>
+<section id="id28">
+<h4>목적<a class="headerlink" href="#id28" title="Link to this heading"></a></h4>
+<p>화면 ▭ 에 저장된 레코딩 한 건을 통째로 열어 <strong>시간축 차트</strong> 와 <strong>X·Y 상관관계
+산점도</strong> 로 들여다봅니다. 같은 분석을 반복할 때를 위해 <strong>차트 구성을 템플릿</strong> 으로
+저장해두면, 다음 레코딩에서 한 번 클릭으로 동일한 그림을 띄울 수 있습니다.</p>
+<p>이 화면은 라이브 데이터를 보지 않습니다. 어디까지나 <strong>이미 저장된 CSV</strong> 를
+대상으로 한 사후 분석입니다.</p>
+</section>
+<section id="id29">
+<h4>화면 진입<a class="headerlink" href="#id29" title="Link to this heading"></a></h4>
+<p>두 가지 경로:</p>
+<ul class="simple">
+<li><p>화면 ▭ <strong>레코딩</strong> 의 라이브러리 행에서 <strong>[분석 열기]</strong> 클릭 → 자동으로 ⟁
+화면 + 그 레코딩 활성화</p></li>
+<li><p>좌측 사이드바의 ⟁ 아이콘 직접 클릭 → 이전에 마지막으로 본 레코딩 자동 로드</p></li>
+</ul>
+<p>레코딩이 하나도 없으면 안내 화면이 떠서 ▭ 로 이동을 권유합니다.</p>
+</section>
+<section id="id30">
+<h4>화면 구성<a class="headerlink" href="#id30" title="Link to this heading"></a></h4>
+<section id="id31">
+<h5>상단 — 로드된 레코딩 바<a class="headerlink" href="#id31" title="Link to this heading"></a></h5>
+<p>현재 분석 중인 파일 이름·메모·날짜가 표시되고, <strong>▾ 다른 레코딩</strong> 버튼을 누르면
+라이브러리 전체에서 다른 항목을 빠르게 골라 전환할 수 있습니다.</p>
+</section>
+<section id="px">
+<h5>좌측 사이드바 (260px) — 변수 브라우저<a class="headerlink" href="#px" title="Link to this heading"></a></h5>
+<p>이 CSV 에 들어있는 모든 채널 목록이 표시됩니다. 각 채널을 클릭해서 <strong>PINNED</strong>
+에 추가/제거. 최대 6개까지 핀할 수 있고, 핀된 채널은 가운데 큰 차트와 BrushTimeline
+에 색깔별로 같이 그려집니다.</p>
+</section>
+<section id="pinned">
+<h5>가운데 — PINNED 칩 + 표시 모드<a class="headerlink" href="#pinned" title="Link to this heading"></a></h5>
+<p>좌측에 현재 핀된 채널들이 색칠된 칩으로 나열되고, 우측에 표시 모드 토글:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 78.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>모드</p></th>
+<th class="head"><p>차트 형태</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>오버레이</p></td>
+<td><p>핀된 채널들을 같은 차트에 색깔별로 겹쳐서 그림. 상관관계 시각적으로 비교할 때.</p></td>
+</tr>
+<tr class="row-odd"><td><p>상하분할</p></td>
+<td><p>각 채널을 위아래로 분리된 작은 차트로. 단위·스케일이 다른 채널을 비교할 때.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="focus">
+<h5>큰 차트 — FOCUS<a class="headerlink" href="#focus" title="Link to this heading"></a></h5>
+<p>가운데 메인 영역. 현재 시간 범위(<code class="docutils literal notranslate"><span class="pre">FOCUS</span> <span class="pre">·</span> <span class="pre">00:12</span> <span class="pre">→</span> <span class="pre">00:47</span> <span class="pre">Δ</span> <span class="pre">00:35</span></code>) 가 헤더에
+표시되고, 위에서 정한 모드로 차트가 그려집니다.</p>
+<p>상단 우측 두 버튼:</p>
+<ul class="simple">
+<li><p><strong>전체 보기</strong> — 시간 범위를 0 ~ 끝 전체로</p></li>
+<li><p><strong>이벤트 윈도우</strong> — 사이클 중반(55%~82%) 으로 빠르게 점프. 보통 아크가 안정화된
+구간을 보고 싶을 때.</p></li>
+</ul>
+</section>
+<section id="x-y-1-2">
+<h5>X · Y 상관관계 #1 / #2 — 산점도 두 개<a class="headerlink" href="#x-y-1-2" title="Link to this heading"></a></h5>
+<p>큰 차트 아래 좌·우 두 개의 산점도. 각 산점도 헤더에서 <strong>X 변수</strong> 와 <strong>Y 변수</strong>
+를 따로 골라서 두 페어를 동시에 비교할 수 있습니다.</p>
+<p>특수 변수 <code class="docutils literal notranslate"><span class="pre">__timer__</span></code> 는 “시간축” 을 뜻합니다. 예를 들어 X=``__timer__``,
+Y=``xOffset`` 으로 두면 시간에 따라 X 오프셋이 어떻게 보정되는지가 산점도로
+보입니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>두 산점도를 동시에 쓰는 전형적인 패턴:</p>
+<ul class="simple">
+<li><p><strong>#1</strong>: <code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code> vs <code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code> (두 raw 신호의 상관관계)</p></li>
+<li><p><strong>#2</strong>: <code class="docutils literal notranslate"><span class="pre">__timer__</span></code> vs <code class="docutils literal notranslate"><span class="pre">xOffset</span></code> (보정값의 시간 추이)</p></li>
+</ul>
+<p>이러면 입력 두 신호가 어떻게 출력 한 오프셋으로 합쳐지는지 한 눈에 보입니다.</p>
+</div>
+</section>
+<section id="brush-timeline">
+<h5>하단 — Brush Timeline<a class="headerlink" href="#brush-timeline" title="Link to this heading"></a></h5>
+<p>전체 사이클을 작은 그래프로 보여주고, 그 위에 <strong>드래그 가능한 시간 윈도우</strong>
+가 있습니다. 이 윈도우가 위의 모든 차트(큰 차트 + 산점도 두 개) 의 표시 범위를
+결정합니다.</p>
+<ul class="simple">
+<li><p>가장자리를 드래그 → 윈도우 좌우 끝 조정</p></li>
+<li><p>한가운데를 드래그 → 윈도우 통째로 이동</p></li>
+<li><p>호버 → 위쪽 모든 차트에 십자선이 같은 시점으로 동기화 (값 비교)</p></li>
+</ul>
+</section>
+</section>
+<section id="id32">
+<h4>템플릿 — 차트 구성 저장/적용<a class="headerlink" href="#id32" title="Link to this heading"></a></h4>
+<p>가운데 영역 맨 위에 <strong>템플릿 바</strong> 가 있습니다. 한 번 좋은 조합을 찾으면 그
+“pinned 채널 + 산점도 X·Y 페어 + 표시 모드” 묶음을 통째로 저장해두고, 다음
+레코딩에 같은 조합을 한 번에 적용할 수 있습니다.</p>
+<p>기본으로 두 개의 <strong>내장 템플릿</strong> 이 있습니다:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 24.0%" />
+<col style="width: 54.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>이름</p></th>
+<th class="head"><p>핀된 채널</p></th>
+<th class="head"><p>산점도</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>X 아크센싱</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code>, <code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code></p></td>
+<td><p>#1: 시간 vs <code class="docutils literal notranslate"><span class="pre">xOffset</span></code> · #2: <code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code> vs <code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Y 아크센싱</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TopRight_Plus</span></code>, <code class="docutils literal notranslate"><span class="pre">BotLeft_Minus</span></code></p></td>
+<td><p>#1: 시간 vs <code class="docutils literal notranslate"><span class="pre">yOffset</span></code> · #2: <code class="docutils literal notranslate"><span class="pre">TopRight_Plus</span></code> vs <code class="docutils literal notranslate"><span class="pre">BotLeft_Minus</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>여기에 사용자가 자유롭게 본인의 템플릿을 추가합니다.</p>
+<section id="id33">
+<h5>새 템플릿 저장하기<a class="headerlink" href="#id33" title="Link to this heading"></a></h5>
+<ol class="arabic simple">
+<li><p>원하는 채널을 좌측 변수 브라우저에서 핀</p></li>
+<li><p>산점도 #1, #2 의 X·Y 변수 선택</p></li>
+<li><p>표시 모드 (오버레이 / 상하분할) 결정</p></li>
+<li><p>템플릿 바 우측의 <strong>💾 현재 저장</strong> 클릭</p></li>
+<li><p>다이얼로그에서 <strong>이름</strong> 과 <strong>설명</strong> 입력 → 저장</p></li>
+<li><p>즉시 <code class="docutils literal notranslate"><span class="pre">analysis_templates.json</span></code> 파일에 추가되며 동료 PC 에도 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> 후
+바로 보입니다.</p></li>
+</ol>
+</section>
+<section id="id34">
+<h5>템플릿 적용하기<a class="headerlink" href="#id34" title="Link to this heading"></a></h5>
+<p>템플릿 바의 드롭다운에서 이름 클릭 → 그 순간 핀·산점도·모드 모두 한꺼번에
+바뀝니다.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>템플릿이 참조하는 채널이 <strong>현재 레코딩에 없으면</strong> 그 채널만 조용히 건너뜁니다.
+“X 아크센싱” 템플릿을 적용했는데 핀이 비어 있다면, 이 레코딩에 <code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code> /
+<code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code> 채널이 캡처되지 않았다는 뜻입니다.</p>
+</div>
+</section>
+<section id="id35">
+<h5>템플릿 삭제하기<a class="headerlink" href="#id35" title="Link to this heading"></a></h5>
+<p>드롭다운에서 항목 우측의 <strong>×</strong> 클릭. 사용자 템플릿이든 내장이든 동일하게 사라집니다
+(내장은 “다음에 보이지 않게” 처리되는데 사용자 관점에선 똑같이 “삭제” 입니다).
+다시 보이게 하려면 같은 이름으로 새 템플릿을 저장하면 됩니다.</p>
+</section>
+</section>
+<section id="id36">
+<h4>자주 하는 일<a class="headerlink" href="#id36" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>한 사이클의 안정성 검토</strong></dt><dd><ol class="arabic simple">
+<li><p>큰 차트에 <code class="docutils literal notranslate"><span class="pre">weldCurrent</span></code>, <code class="docutils literal notranslate"><span class="pre">weldVoltage</span></code>, <code class="docutils literal notranslate"><span class="pre">Arc_percent</span></code> 를 핀</p></li>
+<li><p><strong>이벤트 윈도우</strong> 클릭 (아크 안정 구간 자동)</p></li>
+<li><p>산점도 #1 을 시간 vs <code class="docutils literal notranslate"><span class="pre">Arc_percent</span></code> 로 두고 진동 폭 확인</p></li>
+</ol>
+</dd>
+<dt><strong>시임 트래킹 보정 검토</strong></dt><dd><ol class="arabic simple">
+<li><p>좌측 변수 브라우저에서 <code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code>, <code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code>, <code class="docutils literal notranslate"><span class="pre">xOffset</span></code> 핀</p></li>
+<li><p>모드를 <strong>상하분할</strong> 로 (단위가 달라서)</p></li>
+<li><p>산점도 #1 = <code class="docutils literal notranslate"><span class="pre">BotRight_Plus</span></code> vs <code class="docutils literal notranslate"><span class="pre">TopLeft_Minus</span></code>, #2 = 시간 vs <code class="docutils literal notranslate"><span class="pre">xOffset</span></code></p></li>
+<li><p>또는 그냥 템플릿 <strong>“X 아크센싱”</strong> 한 번 클릭</p></li>
+</ol>
+</dd>
+<dt><strong>문제 구간 좁히기</strong></dt><dd><ol class="arabic simple">
+<li><p><strong>전체 보기</strong> 클릭 → 사이클 전체 차트 확인</p></li>
+<li><p>Brush Timeline 에서 의심 구간으로 윈도우 드래그</p></li>
+<li><p>윈도우 폭을 좁히면 큰 차트와 산점도 모두 그 구간만 줌인</p></li>
+<li><p>호버해서 각 시점의 정확한 값 읽기</p></li>
+</ol>
+</dd>
+<dt><strong>같은 분석을 다음 레코딩에 그대로</strong></dt><dd><p>첫 레코딩에서 좋은 조합 만들고 → <strong>💾 현재 저장</strong> 으로 템플릿화 → 다음 레코딩
+▭ 에서 [분석 열기] → 템플릿 드롭다운에서 이름 클릭. 끝.</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h4>이런 경우 어떻게 하나<a class="headerlink" href="#id37" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>열었는데 “데이터 없음” / 빈 차트</strong></dt><dd><p>레코딩 CSV 가 비어 있거나 (캡처 도중 RTDE 끊김) 컬럼명이 깨진 경우. ▭ 에서
+해당 행의 SAMPLES 가 0 이면 캡처 자체에 문제가 있던 것.</p>
+</dd>
+<dt><strong>좌측 변수 브라우저에 채널이 너무 적음</strong></dt><dd><p>이 레코딩 시점에 <code class="docutils literal notranslate"><span class="pre">ROBOT_FIELDS</span></code> 가 좁게 설정되어 있었을 가능성. 또는 외부
+임포트된 CSV 라 다른 컬럼 체계를 가질 수 있습니다.</p>
+</dd>
+<dt><strong>템플릿 적용했는데 PINNED 가 비어 있음</strong></dt><dd><p>그 템플릿이 참조하는 채널들이 현재 레코딩에 모두 없다는 뜻. ⌥ GP 매핑 화면
+에서 채널 이름을 확인하거나, 다른 레코딩에서 시도해보세요.</p>
+</dd>
+<dt><strong>산점도가 한 점에 몰려있음</strong></dt><dd><p>X 또는 Y 변수의 값이 일정 구간 동안 거의 안 변한 상태. Brush Timeline 으로
+다른 시간 윈도우를 골라보세요.</p>
+</dd>
+<dt><strong>호버해도 십자선이 안 따라옴</strong></dt><dd><p>브라우저 줌이 100% 가 아니거나, 마우스가 차트 영역 밖에 있는 경우. 한 번
+차트 가운데를 클릭한 후 호버해보세요.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="screen-logs">
+<span id="id38"></span><h3>5. 로봇 로그 ≡<a class="headerlink" href="#screen-logs" title="Link to this heading"></a></h3>
+<section id="id39">
+<h4>목적<a class="headerlink" href="#id39" title="Link to this heading"></a></h4>
+<p>로봇이 URScript 안에서 출력하는 텍스트 로그를 <strong>라이브 텍스트 스트림</strong> 으로 보고,
+필요할 때 <code class="docutils literal notranslate"><span class="pre">.log</span></code> 파일로 내려받습니다. 에러 발생 시 원인을 좇거나, 시퀀스 진행
+(터치 → 셀 선택 → 용접 시작 → 패스 전환 …) 을 한 줄씩 따라갈 때 사용합니다.</p>
+</section>
+<section id="id40">
+<h4>동작 방식 (한 줄 요약)<a class="headerlink" href="#id40" title="Link to this heading"></a></h4>
+<p>이 화면은 <strong>로봇이 대시보드 PC 쪽으로 TCP 접속해 한 줄씩 흘려보내는</strong> 구조입니다.
+대시보드를 띄우면 자동으로 서버가 같이 떠 있고, 로봇 URScript 가 그 주소·포트로
+접속하기만 하면 그 순간부터 모든 라인이 이 화면에 흘러나옵니다.</p>
+</section>
+<section id="id41">
+<h4>화면 구성<a class="headerlink" href="#id41" title="Link to this heading"></a></h4>
+<section id="id42">
+<h5>상단 — 상태 바<a class="headerlink" href="#id42" title="Link to this heading"></a></h5>
+<p>세 종류의 상태를 보여줍니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 26.0%" />
+<col style="width: 74.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>LISTENING</strong></p></td>
+<td><p>대시보드 PC 가 해당 포트(기본 9999) 에서 로봇 접속을 받을 준비가 됐는지.
+녹색이면 OK. 빨강이면 포트 점유 충돌 등 바인드 실패.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>WS</strong></p></td>
+<td><p>대시보드 ↔ 화면의 실시간 전달 채널 상태. 끊기면 자동 재연결.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>연결된 클라이언트</strong></p></td>
+<td><p>지금 접속해서 로그를 흘려보내고 있는 로봇 IP 목록 (보통 1개).</p></td>
+</tr>
+</tbody>
+</table>
+<p>우측의 <strong>편집</strong> 버튼으로 <code class="docutils literal notranslate"><span class="pre">host</span> <span class="pre">:</span> <span class="pre">port</span></code> 를 즉시 변경할 수 있습니다. 다른 포트로
+바꾸려면 로봇 URScript 쪽 설정도 같은 값으로 맞춰야 합니다.</p>
+</section>
+<section id="id43">
+<h5>가운데 — 도구 모음<a class="headerlink" href="#id43" title="Link to this heading"></a></h5>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 78.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>도구</p></th>
+<th class="head"><p>동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>검색창</strong></p></td>
+<td><p>메시지·소스·태그에 일부 일치하는 라인만 표시 (실시간 필터링)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>level 필터</strong></p></td>
+<td><p>debug / info / warn / error 각각 켜고 끔. 각 라벨 옆에 누적 개수</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>▶ / ❚❚</strong></p></td>
+<td><p>일시정지 토글. 잠시 멈춰서 살펴볼 때. 멈춘 동안 들어온 라인은 옆에 <code class="docutils literal notranslate"><span class="pre">+N</span></code> 으로 표시</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>자동 스크롤</strong></p></td>
+<td><p>새 라인이 들어오면 항상 맨 아래로. 위로 스크롤하면 자동으로 꺼짐 (살펴보는 중으로 간주)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>🗑 비우기</strong></p></td>
+<td><p>서버 버퍼와 화면을 동시에 비움. 확인 다이얼로그 있음</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>⤓ 다운로드</strong></p></td>
+<td><p>현재까지의 모든 라인을 <code class="docutils literal notranslate"><span class="pre">robot-log-YYYY-MM-DD-HH-MM-SS.log</span></code> 텍스트로 저장</p></td>
+</tr>
+</tbody>
+</table>
+<p>오른쪽에 <code class="docutils literal notranslate"><span class="pre">shown</span> <span class="pre">/</span> <span class="pre">total</span></code> 으로 “현재 보이는 라인 / 누적 라인” 표시.</p>
+</section>
+<section id="id44">
+<h5>본문 — 로그 라인 목록<a class="headerlink" href="#id44" title="Link to this heading"></a></h5>
+<p>라인 한 줄에 표시되는 것:</p>
+<ul class="simple">
+<li><p><strong>시각</strong> (예: <code class="docutils literal notranslate"><span class="pre">14:23:51.847</span></code>)</p></li>
+<li><p><strong>LEVEL</strong> 색깔 배지 — debug(회색) / info(청록) / warn(호박) / error(빨강)</p></li>
+<li><p><strong>source</strong> — 로봇이 라인을 보내며 같이 첨부한 출처 라벨 (예: <code class="docutils literal notranslate"><span class="pre">main</span></code>, <code class="docutils literal notranslate"><span class="pre">touch</span></code>)</p></li>
+<li><p><strong>메시지</strong> 본문 — 검색어가 있으면 그 부분만 하이라이트</p></li>
+</ul>
+<p>자동 스크롤이 켜져 있으면 새 라인이 들어올 때마다 맨 아래로 스크롤. 사용자가
+위로 한 번 올리면 자동 스크롤이 꺼져서 그 자리에서 살펴볼 수 있습니다. 다시
+바닥 근처로 내려가면 자동 스크롤이 재개됩니다.</p>
+</section>
+</section>
+<section id="id45">
+<h4>자주 하는 일<a class="headerlink" href="#id45" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>로봇이 켜져 있는지 확인</strong></dt><dd><ol class="arabic simple">
+<li><p>≡ 화면 진입</p></li>
+<li><p>상단 LISTENING 이 녹색인지, 연결된 클라이언트 목록에 로봇 IP 가 있는지</p></li>
+<li><p>아래 텍스트 영역에 라인이 들어오고 있는지</p></li>
+</ol>
+</dd>
+<dt><strong>에러 원인 좇기</strong></dt><dd><ol class="arabic simple">
+<li><p>에러가 발생한 직후 <strong>❚❚ 일시정지</strong></p></li>
+<li><p>위로 스크롤해서 에러 라인 + 그 직전 몇 줄을 함께 읽기</p></li>
+<li><p><strong>error</strong> 만 켜고 다른 level 끄면 빠르게 추려짐</p></li>
+<li><p>⤓ 다운로드로 외부 공유</p></li>
+</ol>
+</dd>
+<dt><strong>특정 작업만 보기</strong></dt><dd><p>검색창에 셀명(<code class="docutils literal notranslate"><span class="pre">VL2</span></code>), 작업명(<code class="docutils literal notranslate"><span class="pre">touch</span></code>), 패스 번호 등 키워드 입력 → 실시간
+필터링됨. 필터 켠 상태로 새 라인이 들어오면 즉시 반영.</p>
+</dd>
+<dt><strong>디버깅 시 상세 보기</strong></dt><dd><p>기본으로 debug 는 꺼져 있습니다. 평소 노이즈를 줄이기 위함. 자세히 들여다볼
+때만 debug 도 켜세요.</p>
+</dd>
+<dt><strong>로그를 동료에게 공유</strong></dt><dd><p>⤓ 다운로드 → 받은 <code class="docutils literal notranslate"><span class="pre">.log</span></code> 파일을 메신저나 메일로 전달. 시각·level·source·
+메시지가 모두 텍스트로 포함되어 있어 그대로 읽을 수 있습니다.</p>
+</dd>
+</dl>
+</section>
+<section id="id46">
+<h4>이런 경우 어떻게 하나<a class="headerlink" href="#id46" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt><strong>LISTENING 이 빨강 (바인드 실패)</strong></dt><dd><p>다른 프로그램이 같은 포트를 점유 중일 가능성이 큽니다. 상단 <strong>편집</strong> 으로
+다른 포트(예: 9998) 로 바꿔보거나, <code class="docutils literal notranslate"><span class="pre">netstat</span> <span class="pre">-ano</span> <span class="pre">|</span> <span class="pre">findstr</span> <span class="pre">:9999</span></code> 로 점유 중인
+프로세스 확인 후 종료.</p>
+</dd>
+<dt><strong>LISTENING 은 녹색인데 연결된 클라이언트 없음</strong></dt><dd><p>로봇 URScript 쪽이 아직 접속을 시도하지 않은 상태. 펜던트에서 프로그램이
+실행 중인지, 그 프로그램의 socket_open 인자가 이 화면 상단의 host/port 와
+일치하는지 확인.</p>
+</dd>
+<dt><strong>라인이 한 번에 너무 많이 쏟아짐</strong></dt><dd><p>❚❚ 로 일시정지 후 차분히 살펴봅니다. 또는 level 필터에서 <code class="docutils literal notranslate"><span class="pre">info</span></code> 까지 꺼서
+<code class="docutils literal notranslate"><span class="pre">warn</span></code> / <code class="docutils literal notranslate"><span class="pre">error</span></code> 만 보기. URScript 측에서도 너무 빈번한 debug 출력은 줄이는
+게 좋습니다.</p>
+</dd>
+<dt><strong>자동 스크롤이 계속 꺼짐</strong></dt><dd><p>화면 안에서 살짝 스크롤만 해도 자동 스크롤이 꺼집니다. <strong>자동 스크롤</strong> 체크
+박스를 직접 다시 켜거나, 라인 목록의 맨 아래까지 내려가면 자동 재개됩니다.</p>
+</dd>
+<dt><strong>한글이 깨져 표시</strong></dt><dd><p>URScript 측에서 라인을 보낼 때 UTF-8 인코딩이 아닐 가능성이 큽니다. 로봇 측
+<code class="docutils literal notranslate"><span class="pre">socket_send_line</span></code> 호출부에서 인코딩 확인 필요.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="gp">
+<h3>6. GP 매핑 ⌥<a class="headerlink" href="#gp" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>상세 본문은 다음 단계에서 채워집니다.</p>
+</div>
+<p>로봇이 보내는 신호 번호(예: <code class="docutils literal notranslate"><span class="pre">output_double_register_3</span></code>) 와 친숙한 이름
+(예: <code class="docutils literal notranslate"><span class="pre">용접</span> <span class="pre">전류</span></code>) 사이의 대응표를 편집합니다. 자주 손볼 화면은 아니며, 새
+신호가 URScript 쪽에서 추가됐을 때만 사용합니다.</p>
+</section>
+</section>
+<section id="id47">
+<h2>설정 파일 한눈에 보기<a class="headerlink" href="#id47" title="Link to this heading"></a></h2>
+<p>이 셋만 깃에 같이 올려두면, 동료 PC 에서도 같은 매핑·정의·템플릿으로 시작합니다.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32.0%" />
+<col style="width: 30.0%" />
+<col style="width: 38.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>파일</p></th>
 <th class="head"><p>영향 화면</p></th>
-<th class="head"><p>반영 시점</p></th>
-<th class="head"><p>비고</p></th>
+<th class="head"><p>어떻게 바꾸나</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">gp_mapping.json</span></code></p></td>
-<td><p>②, ⑤</p></td>
-<td><p>서버 재시작</p></td>
-<td><p>RTDE GP register → 친숙명 alias, <code class="docutils literal notranslate"><span class="pre">frequency</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gp_mapping.json</span></code></p></td>
+<td><p>RTDE 실시간, GP 매핑</p></td>
+<td><p>GP 매핑 화면에서 편집 → 저장 → 대시보드 재시작</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">modbus_registers.json</span></code></p></td>
-<td><p>①, ⑤</p></td>
-<td><p>페이지 새로고침</p></td>
-<td><p>저장 전엔 프론트 하드코딩 기본값 사용</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">modbus_registers.json</span></code></p></td>
+<td><p>실시간 모니터링, GP 매핑</p></td>
+<td><p>GP 매핑 화면에서 편집 → 저장 → 페이지 새로고침</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">analysis_templates.json</span></code></p></td>
-<td><p>④</p></td>
-<td><p>즉시 (다음 마운트)</p></td>
-<td><p>사용자 템플릿 + 숨긴 빌트인</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">analysis_templates.json</span></code></p></td>
+<td><p>분석 워크스페이스</p></td>
+<td><p>분석 워크스페이스에서 템플릿 저장 → 즉시 반영</p></td>
 </tr>
 </tbody>
 </table>
@@ -311,8 +1112,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="rtde_background.html" class="btn btn-neutral float-left" title="RTDE 배경 설명" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dashboard_guide.html" class="btn btn-neutral float-right" title="웹 인터페이스 가이드" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="shipyard_setup.html" class="btn btn-neutral float-left" title="Shipyard Dashboard — 시작하기" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="getting_started.html" class="btn btn-neutral float-right" title="시작하기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

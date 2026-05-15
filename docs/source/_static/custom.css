@@ -172,19 +172,50 @@ div[class^="highlight"] {
   color: var(--text);
 }
 
+/* RTD 테마의 흰색/회색 줄무늬 배경을 다크 톤으로 강제 덮어쓰기.
+   list-table, table.docutils, wy-table-responsive 모든 변형 대응. */
+.rst-content table,
 .rst-content table.docutils,
+.rst-content table.docutils tbody,
+.rst-content table.docutils thead,
+.rst-content table.docutils tr,
+.rst-content table.docutils tbody tr,
+.rst-content table.docutils tbody tr:nth-child(odd),
+.rst-content table.docutils tbody tr:nth-child(even),
+.wy-table-responsive table,
+.wy-table-responsive table tbody,
+.wy-table-responsive table tbody tr,
+.wy-table-responsive table tbody tr:nth-child(odd),
+.wy-table-responsive table tbody tr:nth-child(even),
+.wy-table-responsive table thead {
+  background: var(--panel) !important;
+  border-color: var(--border) !important;
+}
+
 .rst-content table.docutils td,
-.rst-content table.docutils th {
-  background: var(--panel);
-  border-color: var(--border);
+.rst-content table.docutils tbody tr:nth-child(odd) td,
+.rst-content table.docutils tbody tr:nth-child(even) td,
+.wy-table-responsive table tbody tr:nth-child(odd) td,
+.wy-table-responsive table tbody tr:nth-child(even) td {
+  background: var(--panel) !important;
+  color: var(--muted) !important;
+  border-color: var(--border) !important;
 }
 
-.rst-content table.docutils th {
-  color: var(--text);
+.rst-content table.docutils thead tr th,
+.rst-content table.docutils thead th,
+.rst-content table.docutils th.head,
+.rst-content table.docutils th,
+.wy-table-responsive table thead tr th,
+.wy-table-responsive table th {
+  background: var(--panel-soft) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  font-weight: 600;
 }
 
-.rst-content table.docutils td {
-  color: var(--muted);
+.rst-content table.docutils caption {
+  color: var(--muted) !important;
 }
 
 .hero-panel {

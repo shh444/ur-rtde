@@ -33,13 +33,26 @@
 <!-- Data + shared atoms -->
 <script src="data.js"></script>
 <script src="data-modbus.js"></script>
+<!-- tracks-data 는 mock 초기값 — 페이지 로드 시 window.TRACKS 를 세팅.
+     레코딩 선택되면 tracks-loader 가 백엔드 /bundle 로 덮어씀. -->
+<script src="tracks-data.js"></script>
+<script src="tracks-loader.js"></script>
 <script type="text/babel" src="shared.jsx"></script>
 
 <!-- Tweaks shell -->
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 
-<!-- Analysis variant — provides helper components used by Screen Analysis -->
+<!-- Analysis variant — provides AnalysisScatterPlot used by VariantTracksFinal -->
 <script type="text/babel" src="variant-standard.jsx"></script>
+
+<!-- 3-트랙 분석 (Tracks) — VariantTracksFinal 이 사용하는 컴포넌트 트리 -->
+<script type="text/babel" src="tracks-shared.jsx"></script>
+<script type="text/babel" src="tracks-components.jsx"></script>
+<script type="text/babel" src="tracks-components2.jsx"></script>
+<script type="text/babel" src="tracks-helpers.jsx"></script>
+<script type="text/babel" src="variant-tracks-final-1.jsx"></script>
+<script type="text/babel" src="variant-tracks-final-2.jsx"></script>
+<script type="text/babel" src="variant-tracks-final.jsx"></script>
 
 <!-- Screens + shell -->
 <script type="text/babel" src="screen-monitoring.jsx"></script>

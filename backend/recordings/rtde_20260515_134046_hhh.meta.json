@@ -1,0 +1,19 @@
+{
+  "name": "hhh",
+  "cell": "hh",
+  "weld_on": "예",
+  "note": "",
+  "block": "",
+  "path": "",
+  "operator": "",
+  "alarms": 0,
+  "startedAt": "2026-05-15 13:40:46",
+  "started_monotonic": 17055.343,
+  "has_modbus": true,
+  "has_logs": true,
+  "duration": 7,
+  "samples": 877,
+  "endedAt": "2026-05-15 13:40:54",
+  "modbus_rows": 29,
+  "logs_rows": 6
+}

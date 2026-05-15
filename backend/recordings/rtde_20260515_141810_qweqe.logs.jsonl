@@ -1,0 +1,13 @@
+{"id": 59, "ts": 1778822290.102365, "time": "14:18:10.102", "date": "2026-05-15", "source": "system", "client_id": null, "level": "info", "message": "capture started · rtde_20260515_141810_qweqe.logs.jsonl", "raw": "capture started · rtde_20260515_141810_qweqe.logs.jsonl", "system": true}
+{"id": 60, "ts": 1778822293.2766528, "time": "14:18:13.276", "date": "2026-05-15", "source": "system", "client_id": 5, "level": "info", "message": "client connected · 192.168.1.7:59136", "raw": "client connected · 192.168.1.7:59136", "system": true}
+{"id": 61, "ts": 1778822293.2848146, "time": "14:18:13.284", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "Welcome! Begin logging system", "level": "info", "message": "Welcome! Begin logging system"}
+{"id": 62, "ts": 1778822294.3212905, "time": "14:18:14.321", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "1", "level": "info", "message": "1"}
+{"id": 63, "ts": 1778822295.3707154, "time": "14:18:15.370", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "2", "level": "info", "message": "2"}
+{"id": 64, "ts": 1778822295.6535013, "time": "14:18:15.653", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "1 cycle done!", "level": "info", "message": "1 cycle done!"}
+{"id": 65, "ts": 1778822295.6535013, "time": "14:18:15.653", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "1", "level": "info", "message": "1"}
+{"id": 66, "ts": 1778822296.4117084, "time": "14:18:16.411", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "3", "level": "info", "message": "3"}
+{"id": 67, "ts": 1778822297.451806, "time": "14:18:17.451", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "4", "level": "info", "message": "4"}
+{"id": 68, "ts": 1778822298.168587, "time": "14:18:18.168", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "1 cycle done!", "level": "info", "message": "1 cycle done!"}
+{"id": 69, "ts": 1778822298.168587, "time": "14:18:18.168", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "2", "level": "info", "message": "2"}
+{"id": 70, "ts": 1778822298.492496, "time": "14:18:18.492", "date": "2026-05-15", "source": "client#5", "client_id": 5, "raw": "5", "level": "info", "message": "5"}
+{"id": 71, "ts": 1778822298.9357262, "time": "14:18:18.935", "date": "2026-05-15", "source": "system", "client_id": null, "level": "info", "message": "capture stopped", "raw": "capture stopped", "system": true}

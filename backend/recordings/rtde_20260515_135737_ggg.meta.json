@@ -1,0 +1,19 @@
+{
+  "name": "ggg",
+  "cell": "gg",
+  "weld_on": "아니오",
+  "note": "",
+  "block": "",
+  "path": "",
+  "operator": "",
+  "alarms": 0,
+  "startedAt": "2026-05-15 13:57:37",
+  "started_monotonic": 18066.328,
+  "has_modbus": true,
+  "has_logs": true,
+  "duration": 19,
+  "samples": 2266,
+  "endedAt": "2026-05-15 13:57:56",
+  "modbus_rows": 74,
+  "logs_rows": 11
+}
