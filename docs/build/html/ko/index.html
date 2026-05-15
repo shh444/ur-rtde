@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="시작하기" href="getting_started.html" />
+    <link rel="next" title="조선소 대시보드 셋업" href="shipyard_setup.html" />
     <link rel="prev" title="API reference" href="../en/api_reference.html" /> 
 </head>
 
@@ -61,9 +61,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">RTDE Reference Program</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id1">스크린샷</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">빠른 이동</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="shipyard_setup.html">조선소 대시보드 셋업</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shipyard_guide.html">조선소 대시보드 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="getting_started.html">시작하기</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rtde_background.html">RTDE 배경 설명</a></li>
-<li class="toctree-l3"><a class="reference internal" href="shipyard_guide.html">조선소 대시보드 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dashboard_guide.html">웹 인터페이스 가이드</a></li>
 <li class="toctree-l3"><a class="reference internal" href="python_api.html">Python API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="troubleshooting.html">문제 해결</a></li>
@@ -129,42 +130,63 @@
 <section id="id2">
 <h2>빠른 이동<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <div class="quick-grid">
-  <a class="quick-card" href="getting_started.html">
-    <strong>시작하기</strong>
-    <span>설치, 단일 IP 설정, 웹 인터페이스 실행 순서를 확인합니다.</span>
+  <a class="quick-card" href="shipyard_setup.html">
+    <strong>조선소 대시보드 셋업</strong>
+    <span>shipyard 8010 — 처음 시작하는 PC 에서 설치·실행·설정 JSON 동기화 절차.</span>
   </a>
   <a class="quick-card" href="shipyard_guide.html">
     <strong>조선소 대시보드 가이드</strong>
-    <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면을 설명합니다.</span>
+    <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면 사용법.</span>
+  </a>
+  <a class="quick-card" href="getting_started.html">
+    <strong>RTDE Reference 시작하기</strong>
+    <span>레거시 통합 대시보드(8008) 설치, 단일 IP 설정, 권장 RTDE 필드 조합.</span>
   </a>
   <a class="quick-card" href="dashboard_guide.html">
     <strong>통합 대시보드 (8008)</strong>
-    <span>레거시 통합 대시보드의 패널, 추천 필드 조합, 모니터링 흐름을 설명합니다.</span>
+    <span>레거시 통합 대시보드의 패널, 추천 필드 조합, 모니터링 흐름.</span>
   </a>
   <a class="quick-card" href="python_api.html">
     <strong>Python API 가이드</strong>
-    <span>RTDE 필드 읽기, GP 레지스터 쓰기, 클래스 기반 API 사용법을 설명합니다.</span>
+    <span>RTDE 필드 읽기, GP 레지스터 쓰기, 클래스 기반 API 사용법.</span>
   </a>
   <a class="quick-card" href="rtde_background.html">
     <strong>RTDE 배경 설명</strong>
-    <span>recipe, GP input/output 구분, 주파수 선택, 필드 이름 규칙을 설명합니다.</span>
+    <span>recipe, GP input/output 구분, 주파수 선택, 필드 이름 규칙.</span>
   </a>
 </div><div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">문서 (KO)</span></p>
+<p class="caption" role="heading"><span class="caption-text">조선소 대시보드 (shipyard 8010)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="shipyard_setup.html">조선소 대시보드 셋업</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id2">사전 준비</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id3">저장소 받기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id4">가상환경 + 패키지 설치</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#app-config-py">로봇 연결 설정 — <code class="file docutils literal notranslate"><span class="pre">app_config.py</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#shipyard">shipyard 첫 실행</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id5">브라우저 첫 접속</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#json">설정 JSON 파일 — 어디 있고 무엇을 하는가</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#pc">동료 PC 에 동일 환경 만들기</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#rtde">권장 RTDE 시작 설정</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id7">트러블슈팅 (첫 셋업 빈도 높은 순)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_setup.html#id8">다음 단계</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="shipyard_guide.html">조선소 대시보드 가이드</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id2">개요</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id5">실행 방법</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id6">화면별 가이드</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id8">설정 파일 요약</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">RTDE Reference Program</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">시작하기</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id2">사전 준비</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id3">저장소 받기</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id4">가상환경 + 패키지 설치</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#app-config-py">로봇 연결 설정 — <code class="file docutils literal notranslate"><span class="pre">app_config.py</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#vs-8008">대시보드 선택 — 8010 vs 8008</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#shipyard">shipyard 첫 실행</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id5">브라우저 첫 접속</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#json">설정 JSON 파일 — 어디 있고 무엇을 하는가</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#pc">동료 PC 에 동일 환경 만들기</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id7">권장 시작 설정</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id8">트러블슈팅 (첫 셋업 빈도 높은 순)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id9">다음 단계</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#windows">Windows 설치</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id2">단일 설정 지점</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#id3">권장 시작 설정</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="rtde_background.html">RTDE 배경 설명</a><ul>
@@ -174,13 +196,6 @@
 <li class="toctree-l2"><a class="reference internal" href="rtde_background.html#gp-input-gp-output">GP input 과 GP output 구분</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rtde_background.html#id3">주파수와 부하</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rtde_background.html#current-window">Current-window 보기</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="shipyard_guide.html">조선소 대시보드 가이드</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id2">개요</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id5">실행 방법</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id6">화면별 가이드</a></li>
-<li class="toctree-l2"><a class="reference internal" href="shipyard_guide.html#id8">설정 파일 요약</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dashboard_guide.html">웹 인터페이스 가이드</a><ul>
@@ -233,7 +248,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../en/api_reference.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="getting_started.html" class="btn btn-neutral float-right" title="시작하기" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="shipyard_setup.html" class="btn btn-neutral float-right" title="조선소 대시보드 셋업" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

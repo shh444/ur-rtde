@@ -67,3 +67,12 @@ UI_PORT = 8008
 # run_shipyard.py 가 이 포트로 띄움. UI_PORT와 분리되어 동시 운영 가능.
 SHIPYARD_HOST = "127.0.0.1"
 SHIPYARD_PORT = 8010
+
+# ─── 로봇 → 백엔드 로그 소켓 ──────────────────────────────────────────
+# 로봇/외부 디바이스가 TCP 클라이언트로 접속해서 라인 단위 로그를 보내는 서버.
+# 줄 단위(`\n` 종료)로 받고, JSON 줄이면 파싱해서 level/message 분리, 아니면 raw.
+# 0.0.0.0 으로 두면 로봇 네트워크에서 접근 가능. 보안망에선 robot subnet 으로 제한.
+LOG_SOCKET_HOST = "0.0.0.0"
+LOG_SOCKET_PORT = 9999
+# 메모리 ring buffer 길이 (라인 수). 초과분은 가장 오래된 것부터 폐기.
+LOG_SOCKET_BUFFER = 5000

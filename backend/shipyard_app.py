@@ -29,6 +29,7 @@ from pydantic import BaseModel
 try:
     from .modbus_service import ModbusService
     from .service import DashboardService
+    from .log_socket_service import LogSocketService
     from .db import get_db
     from .settings import (
         DEFAULT_FIELDS,
@@ -37,6 +38,9 @@ try:
         DEFAULT_HISTORY_SECONDS,
         DEFAULT_HOST,
         DEFAULT_LIVE_PUSH_HZ,
+        DEFAULT_LOG_SOCKET_BUFFER,
+        DEFAULT_LOG_SOCKET_HOST,
+        DEFAULT_LOG_SOCKET_PORT,
         DEFAULT_MODBUS_HOST,
         DEFAULT_MODBUS_POLL_HZ,
         DEFAULT_ROBOT_MODEL,
@@ -45,6 +49,7 @@ try:
 except ImportError:
     from modbus_service import ModbusService
     from service import DashboardService
+    from log_socket_service import LogSocketService
     from db import get_db
     from settings import (
         DEFAULT_FIELDS,
@@ -53,6 +58,9 @@ except ImportError:
         DEFAULT_HISTORY_SECONDS,
         DEFAULT_HOST,
         DEFAULT_LIVE_PUSH_HZ,
+        DEFAULT_LOG_SOCKET_BUFFER,
+        DEFAULT_LOG_SOCKET_HOST,
+        DEFAULT_LOG_SOCKET_PORT,
         DEFAULT_MODBUS_HOST,
         DEFAULT_MODBUS_POLL_HZ,
         DEFAULT_ROBOT_MODEL,
@@ -125,6 +133,11 @@ service = DashboardService(
     field_aliases=_gp_cfg["aliases"],
 )
 modbus = ModbusService(host=DEFAULT_MODBUS_HOST, poll_hz=DEFAULT_MODBUS_POLL_HZ)
+log_socket = LogSocketService(
+    host=DEFAULT_LOG_SOCKET_HOST,
+    port=DEFAULT_LOG_SOCKET_PORT,
+    buffer_size=DEFAULT_LOG_SOCKET_BUFFER,
+)
 
 
 @asynccontextmanager
@@ -138,6 +151,11 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         print(f"[db] init/sync failed (CSV 만 사용): {exc}")
     modbus.start()
+    # 로봇이 클라이언트로 접속할 TCP 로그 서버 — 바인드 실패해도 앱은 계속 띄움
+    try:
+        log_socket.start()
+    except Exception as exc:
+        print(f"[log_socket] start failed: {exc}")
     # RTDE 도 자동 시작. 로봇 미연결이면 백오프 재연결을 service 가 알아서 처리.
     # 이게 빠져 있으면 라이브 레코딩 시 프레임 0개 캡처되어 빈 CSV/DB row 가 생김.
     try:
@@ -148,6 +166,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         modbus.shutdown()
+        log_socket.shutdown()
         service.shutdown()
 
 
@@ -227,6 +246,50 @@ async def ws_modbus(websocket: WebSocket):
     try:
         async for snap in modbus.subscribe():
             await websocket.send_json(snap)
+    except WebSocketDisconnect:
+        return
+
+
+# ── Robot log socket (로봇 → 우리, 라인 단위 텍스트/JSON) ──────────────
+@app.get("/api/logs/status")
+def api_logs_status():
+    return log_socket.status()
+
+
+@app.get("/api/logs/recent")
+def api_logs_recent(limit: int = 500, since_id: int = 0):
+    return {"items": log_socket.recent(limit=limit, since_id=since_id)}
+
+
+@app.post("/api/logs/clear")
+def api_logs_clear():
+    log_socket.clear()
+    return {"ok": True}
+
+
+class LogSocketConfigRequest(BaseModel):
+    host: Optional[str] = None
+    port: Optional[int] = None
+    buffer_size: Optional[int] = None
+
+
+@app.post("/api/logs/config")
+def api_logs_config(req: LogSocketConfigRequest):
+    """런타임에 listen host/port 변경. 기존 연결은 끊기고 새 포트로 재기동."""
+    host = req.host if req.host is not None else log_socket.host
+    port = req.port if req.port is not None else log_socket.port
+    try:
+        return log_socket.reconfigure(host, port, req.buffer_size)
+    except Exception as exc:
+        raise HTTPException(400, f"log_socket reconfigure failed: {exc}")
+
+
+@app.websocket("/ws/logs")
+async def ws_logs(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        async for entry in log_socket.subscribe():
+            await websocket.send_json(entry)
     except WebSocketDisconnect:
         return
 
@@ -317,6 +380,16 @@ def _count_csv_rows(path: Path) -> int:
 
 def _sidecar_path(csv_path: Path) -> Path:
     return csv_path.with_suffix(".meta.json")
+
+
+def _modbus_capture_path(csv_path: Path) -> Path:
+    """RTDE CSV 옆에 같이 떨어지는 Modbus 사이드카 (.modbus.jsonl)."""
+    return csv_path.with_suffix(".modbus.jsonl")
+
+
+def _logs_capture_path(csv_path: Path) -> Path:
+    """RTDE CSV 옆에 같이 떨어지는 로그 사이드카 (.logs.jsonl)."""
+    return csv_path.with_suffix(".logs.jsonl")
 
 
 def _read_sidecar(csv_path: Path) -> dict:
@@ -425,6 +498,15 @@ def api_recordings_start(req: RecordingStartRequest):
     rec_path_name = rec.get("path") or rec.get("filename")
     if rec_path_name:
         csv_path = service.recordings_dir / Path(rec_path_name).name
+        # Modbus / Log 캡처도 함께 시작 — 실패해도 RTDE 캡처는 계속 (best-effort)
+        try:
+            modbus.start_capture(_modbus_capture_path(csv_path))
+        except Exception as exc:
+            print(f"[start] modbus capture failed: {exc}")
+        try:
+            log_socket.start_capture(_logs_capture_path(csv_path))
+        except Exception as exc:
+            print(f"[start] log capture failed: {exc}")
         # 사이드카 (CSV 안전망)
         _write_sidecar(csv_path, {
             "name": req.name or req.block or "",
@@ -437,6 +519,8 @@ def api_recordings_start(req: RecordingStartRequest):
             "alarms": 0,
             "startedAt": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "started_monotonic": time.monotonic(),
+            "has_modbus": True,
+            "has_logs": True,
         })
         # DB 메타 — service.start_recording 이 이미 DB row 를 만들었으므로 그걸 update
         try:
@@ -458,6 +542,18 @@ def api_recordings_start(req: RecordingStartRequest):
 
 @app.post("/api/recordings/stop")
 def api_recordings_stop():
+    # RTDE 보다 먼저 Modbus/Log 캡처를 멈춰서 RTDE stop 의 finalize 가 끝나는 동안에도
+    # 사이드카에 더 들어가지 않도록. 둘 다 best-effort.
+    modbus_rows = 0
+    logs_rows = 0
+    try:
+        modbus_rows = (modbus.stop_capture() or {}).get("rows", 0)
+    except Exception as exc:
+        print(f"[stop] modbus stop_capture failed: {exc}")
+    try:
+        logs_rows = (log_socket.stop_capture() or {}).get("rows", 0)
+    except Exception as exc:
+        print(f"[stop] log stop_capture failed: {exc}")
     state = service.stop_recording()
     # 사이드카에 duration / samples 마무리 기록
     rec = state.get("recording", {}) if isinstance(state, dict) else {}
@@ -475,6 +571,10 @@ def api_recordings_stop():
             meta["samples"] = samples
             ended_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             meta["endedAt"] = ended_at
+            meta["modbus_rows"] = modbus_rows
+            meta["logs_rows"] = logs_rows
+            meta["has_modbus"] = _modbus_capture_path(csv_path).exists()
+            meta["has_logs"] = _logs_capture_path(csv_path).exists()
             _write_sidecar(csv_path, meta)
             # DB 도 동기화 — service._stop_recording_locked 이 finalize 는 했지만
             # duration_s 는 그때 모르므로 여기서 보정.
@@ -575,6 +675,77 @@ def api_recordings_download(name: str) -> FileResponse:
     return FileResponse(p, filename=name)
 
 
+def _load_jsonl(path: Path, max_rows: int = 0) -> list[dict]:
+    """JSONL 한 파일 → dict 리스트. max_rows=0 은 전체. 깨진 줄은 skip."""
+    items: list[dict] = []
+    try:
+        with path.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    items.append(json.loads(line))
+                except Exception:
+                    continue
+                if max_rows and len(items) >= max_rows:
+                    break
+    except OSError:
+        return []
+    return items
+
+
+@app.get("/api/recordings/{name}/modbus")
+def api_recordings_modbus(name: str, max_rows: int = 0):
+    """레코딩 중 캡처된 Modbus snapshot 시계열. .modbus.jsonl 사이드카에서 로드.
+    각 엔트리는 {tick, ts, welding{...}, status{...}, connected, ...} 형태."""
+    csv_path = service.recordings_dir / name
+    if not csv_path.exists():
+        raise HTTPException(404, "recording not found")
+    side = _modbus_capture_path(csv_path)
+    if not side.exists():
+        return {"name": name, "items": [], "present": False}
+    return {"name": name, "items": _load_jsonl(side, max_rows=max_rows), "present": True}
+
+
+@app.get("/api/recordings/{name}/logs")
+def api_recordings_logs(name: str, max_rows: int = 0):
+    """레코딩 중 캡처된 로그 라인. .logs.jsonl 사이드카에서 로드.
+    각 엔트리는 {id, ts, time, level, message, source, ...} 형태."""
+    csv_path = service.recordings_dir / name
+    if not csv_path.exists():
+        raise HTTPException(404, "recording not found")
+    side = _logs_capture_path(csv_path)
+    if not side.exists():
+        return {"name": name, "items": [], "present": False}
+    return {"name": name, "items": _load_jsonl(side, max_rows=max_rows), "present": True}
+
+
+@app.get("/api/recordings/{name}/bundle")
+def api_recordings_bundle(name: str, max_rows: int = 0):
+    """RTDE + Modbus + Log 를 한번에. 분석 화면에서 시간정렬해서 동시 표시할 때 사용.
+    rtde.data 는 column-oriented (기존 형식), modbus.items / logs.items 는 line-oriented."""
+    csv_path = service.recordings_dir / name
+    if not csv_path.exists():
+        raise HTTPException(404, "recording not found")
+
+    rtde = api_recordings_data(name, max_rows=max_rows)
+    side_modbus = _modbus_capture_path(csv_path)
+    side_logs = _logs_capture_path(csv_path)
+    return {
+        "name": name,
+        "rtde": rtde,
+        "modbus": {
+            "present": side_modbus.exists(),
+            "items": _load_jsonl(side_modbus, max_rows=max_rows) if side_modbus.exists() else [],
+        },
+        "logs": {
+            "present": side_logs.exists(),
+            "items": _load_jsonl(side_logs, max_rows=max_rows) if side_logs.exists() else [],
+        },
+    }
+
+
 @app.delete("/api/recordings/{name}")
 def api_recordings_delete(name: str):
     """레코딩 삭제 — CSV, 사이드카(.meta.json), DB row 일괄 제거.
@@ -589,7 +760,7 @@ def api_recordings_delete(name: str):
     if rec_state.get("active") and active_path and Path(active_path).name == name:
         raise HTTPException(409, "현재 라이브 레코딩 중인 파일입니다. 먼저 중지하세요.")
 
-    removed = {"csv": False, "sidecar": False, "db": False}
+    removed = {"csv": False, "sidecar": False, "db": False, "modbus": False, "logs": False}
     if csv_path.exists():
         try:
             csv_path.unlink()
@@ -603,6 +774,15 @@ def api_recordings_delete(name: str):
             removed["sidecar"] = True
         except OSError:
             pass  # 사이드카 실패는 silent — CSV+DB 가 1차 안전망
+    # Modbus/Log 사이드카도 같이 정리
+    for key, fn in (("modbus", _modbus_capture_path), ("logs", _logs_capture_path)):
+        p = fn(csv_path)
+        if p.exists():
+            try:
+                p.unlink()
+                removed[key] = True
+            except OSError:
+                pass
     try:
         db = get_db(ROOT)
         removed["db"] = db.delete_recording_by_filename(name)

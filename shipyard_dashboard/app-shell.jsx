@@ -7,6 +7,7 @@ const NAV = [
   { id: 'rtde',       label: 'RTDE 실시간',     sub: 'GP + 자세',    icon: '◈' },
   { id: 'recordings', label: '레코딩',           sub: 'RTDE',         icon: '▭' },
   { id: 'analysis',   label: '분석 워크스페이스', sub: '사후 차트',     icon: '⟁' },
+  { id: 'logs',       label: '로봇 로그',         sub: 'TCP Socket',   icon: '≡' },
   { id: 'mapping',    label: 'GP 매핑',          sub: 'JSON',         icon: '⌥' },
 ];
 
@@ -281,6 +282,7 @@ function AppShell() {
               library={library}
             />
           )}
+          {screen === 'logs' && <ScreenLogs />}
           {screen === 'mapping' && <ScreenMapping />}
         </main>
       </div>

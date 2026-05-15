@@ -12,9 +12,11 @@ Threading model:
 from __future__ import annotations
 
 import asyncio
+import json
 import threading
 import time
 import traceback
+from pathlib import Path
 from typing import Any, AsyncIterator, Optional
 
 try:
@@ -53,6 +55,13 @@ class ModbusService:
         self._thread: Optional[threading.Thread] = None
         self._tick = 0
 
+        # 캡처 (레코딩 사이드카) — RTDE 레코딩 시작 시 같이 열고 닫음.
+        # JSONL: 한 줄 = 한 폴링 tick 의 snapshot 사본. 파싱 단순/append 안전.
+        self._capture_file: Optional[Any] = None
+        self._capture_path: Optional[Path] = None
+        self._capture_rows = 0
+        self._capture_lock = threading.RLock()
+
     # ── lifecycle ────────────────────────────────────────────────────
     def start(self) -> None:
         if self._thread and self._thread.is_alive():
@@ -74,6 +83,8 @@ class ModbusService:
                 except Exception:
                     pass
                 self._client = None
+        with self._capture_lock:
+            self._capture_stop_locked()
 
     def reconfigure(self, host: str, port: int = 502, poll_hz: Optional[float] = None) -> dict:
         """런타임에 호스트/포트를 바꾸고 폴링 스레드를 재기동. 즉시 적용.
@@ -219,6 +230,7 @@ class ModbusService:
                     })
                     snap_copy = dict(self._snapshot)
                 self._broadcast(snap_copy)
+                self._capture_write(snap_copy)
 
             except Exception as exc:
                 self._snapshot_set_error(f"poll: {exc}")
@@ -232,3 +244,53 @@ class ModbusService:
             sleep_for = interval - elapsed
             if sleep_for > 0:
                 self._stop.wait(sleep_for)
+
+    # ── capture (레코딩 사이드카) ──────────────────────────────────────
+    def start_capture(self, path: Path) -> dict:
+        """RTDE 레코딩과 함께 모드버스 폴링 결과를 JSONL 로 저장 시작.
+        실패해도 폴링 스레드는 정상 동작 — 캡처는 best-effort."""
+        with self._capture_lock:
+            self._capture_stop_locked()
+            try:
+                handle = Path(path).open("w", encoding="utf-8", newline="")
+            except OSError as exc:
+                return {"ok": False, "error": str(exc)}
+            self._capture_file = handle
+            self._capture_path = Path(path)
+            self._capture_rows = 0
+            return {"ok": True, "path": str(path)}
+
+    def stop_capture(self) -> dict:
+        with self._capture_lock:
+            path = self._capture_path
+            rows = self._capture_rows
+            self._capture_stop_locked()
+            return {
+                "ok": True,
+                "path": str(path) if path else None,
+                "rows": rows,
+            }
+
+    def _capture_stop_locked(self) -> None:
+        if self._capture_file is not None:
+            try:
+                self._capture_file.close()
+            except Exception:
+                pass
+        self._capture_file = None
+        self._capture_path = None
+        self._capture_rows = 0
+
+    def _capture_write(self, snap: dict[str, Any]) -> None:
+        """폴링 스레드에서 호출. 캡처 미활성이면 noop. I/O 실패 silent (다음 tick 재시도)."""
+        with self._capture_lock:
+            fh = self._capture_file
+            if fh is None:
+                return
+            try:
+                fh.write(json.dumps(snap, ensure_ascii=False, default=str) + "\n")
+                fh.flush()
+                self._capture_rows += 1
+            except Exception:
+                # 캡처가 메인 폴링을 절대 막지 않도록 silent 처리
+                pass

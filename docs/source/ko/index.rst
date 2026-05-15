@@ -44,35 +44,45 @@ RTDE Reference Program
 .. raw:: html
 
    <div class="quick-grid">
-     <a class="quick-card" href="getting_started.html">
-       <strong>시작하기</strong>
-       <span>설치, 단일 IP 설정, 웹 인터페이스 실행 순서를 확인합니다.</span>
+     <a class="quick-card" href="shipyard_setup.html">
+       <strong>조선소 대시보드 셋업</strong>
+       <span>shipyard 8010 — 처음 시작하는 PC 에서 설치·실행·설정 JSON 동기화 절차.</span>
      </a>
      <a class="quick-card" href="shipyard_guide.html">
        <strong>조선소 대시보드 가이드</strong>
-       <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면을 설명합니다.</span>
+       <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면 사용법.</span>
+     </a>
+     <a class="quick-card" href="getting_started.html">
+       <strong>RTDE Reference 시작하기</strong>
+       <span>레거시 통합 대시보드(8008) 설치, 단일 IP 설정, 권장 RTDE 필드 조합.</span>
      </a>
      <a class="quick-card" href="dashboard_guide.html">
        <strong>통합 대시보드 (8008)</strong>
-       <span>레거시 통합 대시보드의 패널, 추천 필드 조합, 모니터링 흐름을 설명합니다.</span>
+       <span>레거시 통합 대시보드의 패널, 추천 필드 조합, 모니터링 흐름.</span>
      </a>
      <a class="quick-card" href="python_api.html">
        <strong>Python API 가이드</strong>
-       <span>RTDE 필드 읽기, GP 레지스터 쓰기, 클래스 기반 API 사용법을 설명합니다.</span>
+       <span>RTDE 필드 읽기, GP 레지스터 쓰기, 클래스 기반 API 사용법.</span>
      </a>
      <a class="quick-card" href="rtde_background.html">
        <strong>RTDE 배경 설명</strong>
-       <span>recipe, GP input/output 구분, 주파수 선택, 필드 이름 규칙을 설명합니다.</span>
+       <span>recipe, GP input/output 구분, 주파수 선택, 필드 이름 규칙.</span>
      </a>
    </div>
 
 .. toctree::
    :maxdepth: 2
-   :caption: 문서 (KO)
+   :caption: 조선소 대시보드 (shipyard 8010)
+
+   shipyard_setup
+   shipyard_guide
+
+.. toctree::
+   :maxdepth: 2
+   :caption: RTDE Reference Program
 
    getting_started
    rtde_background
-   shipyard_guide
    dashboard_guide
    python_api
    troubleshooting
