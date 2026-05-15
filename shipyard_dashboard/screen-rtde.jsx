@@ -268,30 +268,63 @@ function ScreenRtde() {
         gap: 16,
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {Object.values(RTDE_GROUPS).map(g => {
-            const items = visibleByGroup[g.id];
-            if (!items || items.length === 0) return null;
-            return (
-              <section key={g.id}>
-                <RtdeGroupHeader g={g} count={items.length} />
+          {tab === 'all' ? (
+            // 전체 탭: 그룹 헤더 없이 register 번호 순서로 한 묶음. 매핑된 token 형태가
+            // output_double_register_<n> 이므로 끝 숫자를 뽑아서 정렬.
+            visibleRows.length > 0 && (
+              <section>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
                   gap: 8,
                 }}>
-                  {items.map(r => (
-                    <RtdeChannelCard key={r.token}
-                      row={r}
-                      hist={histRef.current[r.token] || []}
-                      group={g}
-                      selected={selected === r.token}
-                      onClick={() => setSelected(selected === r.token ? null : r.token)}
-                    />
-                  ))}
+                  {[...visibleRows]
+                    .sort((a, b) => {
+                      const na = parseInt((String(a.token).match(/_(\d+)$/) || [])[1] ?? '0', 10);
+                      const nb = parseInt((String(b.token).match(/_(\d+)$/) || [])[1] ?? '0', 10);
+                      return na - nb;
+                    })
+                    .map(r => {
+                      const g = RTDE_GROUPS[classifyRtdeRow(r)] || RTDE_GROUPS.weld;
+                      return (
+                        <RtdeChannelCard key={r.token}
+                          row={r}
+                          hist={histRef.current[r.token] || []}
+                          group={g}
+                          selected={selected === r.token}
+                          onClick={() => setSelected(selected === r.token ? null : r.token)}
+                        />
+                      );
+                    })}
                 </div>
               </section>
-            );
-          })}
+            )
+          ) : (
+            Object.values(RTDE_GROUPS).map(g => {
+              const items = visibleByGroup[g.id];
+              if (!items || items.length === 0) return null;
+              return (
+                <section key={g.id}>
+                  <RtdeGroupHeader g={g} count={items.length} />
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                    gap: 8,
+                  }}>
+                    {items.map(r => (
+                      <RtdeChannelCard key={r.token}
+                        row={r}
+                        hist={histRef.current[r.token] || []}
+                        group={g}
+                        selected={selected === r.token}
+                        onClick={() => setSelected(selected === r.token ? null : r.token)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              );
+            })
+          )}
           {visibleRows.length === 0 && (
             <div style={{
               padding: 40, textAlign: 'center',

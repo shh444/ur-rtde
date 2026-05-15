@@ -4,14 +4,13 @@
 
 // ── Analysis templates ────────────────────────────────────────────────
 // 한 화면에 핀된 채널 + 산점도 X/Y + 상세 모드를 묶어 "프리셋"으로 저장.
-// 내장 프리셋은 코드에 박혀있고, 사용자 정의 프리셋은 localStorage 에 저장됨.
+// 내장 프리셋은 코드에 박혀있고, 사용자 정의 프리셋은 backend 파일
+// (analysis_templates.json) 에 저장 — PC/브라우저 간 공유되도록.
 // 템플릿이 참조하는 채널이 현재 레코딩에 없으면 그냥 무시 (조용히 스킵).
-
-const TEMPLATE_STORAGE_KEY = 'shipyard.analysisTemplates.v1';
-// 내장 프리셋은 코드에 박혀 있어서 진짜 메모리에서 지울 수는 없으니, 사용자가
-// 삭제하면 이 키에 ID 를 기록해서 다음 렌더부터 안 보이게 한다. 사용자 관점에선
-// "삭제" 와 동일 (복원 UI 없음 — 필요하면 새 템플릿으로 재생성).
-const DELETED_BUILTIN_KEY = 'shipyard.analysisTemplates.deletedBuiltins.v1';
+const TEMPLATES_API = '/api/analysis/templates';
+// 이전 버전(localStorage 저장) 데이터 마이그레이션용. 한 번 서버로 옮기고 정리.
+const LEGACY_TEMPLATE_KEY = 'shipyard.analysisTemplates.v1';
+const LEGACY_DELETED_KEY = 'shipyard.analysisTemplates.deletedBuiltins.v1';
 
 const BUILTIN_TEMPLATES = [
   {
@@ -41,44 +40,97 @@ const BUILTIN_TEMPLATES = [
   },
 ];
 
-function loadUserTemplates() {
+async function loadAnalysisTemplates() {
   try {
-    const raw = window.localStorage.getItem(TEMPLATE_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(t => t && typeof t === 'object' && t.id && t.name);
-  } catch {
-    return [];
+    const res = await fetch(TEMPLATES_API);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const doc = await res.json();
+    return {
+      templates: Array.isArray(doc.templates)
+        ? doc.templates.filter(t => t && typeof t === 'object' && t.id && t.name)
+        : [],
+      deletedBuiltins: Array.isArray(doc.deletedBuiltins)
+        ? doc.deletedBuiltins.filter(id => typeof id === 'string')
+        : [],
+    };
+  } catch (err) {
+    console.warn('[analysis_templates] load failed:', err);
+    return { templates: [], deletedBuiltins: [] };
   }
 }
 
-function saveUserTemplates(arr) {
+// save 호출은 한쪽만 갱신해도 백엔드가 partial update 를 지원하므로 다른 쪽
+// 현재값을 알 필요 없음. fire-and-forget — UI 는 setState 로 즉시 반영하고
+// POST 는 백그라운드로.
+async function saveUserTemplates(arr) {
   try {
-    window.localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(arr));
-    return true;
-  } catch {
+    const res = await fetch(TEMPLATES_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ templates: arr }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn('[analysis_templates] save templates failed:', err);
     return false;
   }
 }
 
-function loadDeletedBuiltins() {
+async function saveDeletedBuiltins(ids) {
   try {
-    const raw = window.localStorage.getItem(DELETED_BUILTIN_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter(id => typeof id === 'string') : [];
-  } catch {
-    return [];
+    const res = await fetch(TEMPLATES_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ deletedBuiltins: ids }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn('[analysis_templates] save deletedBuiltins failed:', err);
+    return false;
   }
 }
 
-function saveDeletedBuiltins(ids) {
+// 기존 localStorage 사용자 데이터를 한 번만 서버로 옮김. 서버에 이미 데이터가
+// 있으면 스킵 (덮어쓰지 않음). 성공시 localStorage 키 정리.
+async function migrateFromLocalStorage(serverData) {
+  const hasServerData =
+    serverData.templates.length > 0 || serverData.deletedBuiltins.length > 0;
+  if (hasServerData) return null;
+  let legacyTpls = [];
+  let legacyDeleted = [];
   try {
-    window.localStorage.setItem(DELETED_BUILTIN_KEY, JSON.stringify(ids));
-    return true;
-  } catch {
-    return false;
+    const raw = window.localStorage.getItem(LEGACY_TEMPLATE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        legacyTpls = parsed.filter(t => t && typeof t === 'object' && t.id && t.name);
+      }
+    }
+  } catch {}
+  try {
+    const raw = window.localStorage.getItem(LEGACY_DELETED_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        legacyDeleted = parsed.filter(x => typeof x === 'string');
+      }
+    }
+  } catch {}
+  if (legacyTpls.length === 0 && legacyDeleted.length === 0) return null;
+  try {
+    const res = await fetch(TEMPLATES_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ templates: legacyTpls, deletedBuiltins: legacyDeleted }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    try { window.localStorage.removeItem(LEGACY_TEMPLATE_KEY); } catch {}
+    try { window.localStorage.removeItem(LEGACY_DELETED_KEY); } catch {}
+    console.info('[analysis_templates] migrated from localStorage to server');
+    return { templates: legacyTpls, deletedBuiltins: legacyDeleted };
+  } catch (err) {
+    console.warn('[analysis_templates] migration failed (localStorage 유지):', err);
+    return null;
   }
 }
 
@@ -170,12 +222,27 @@ function AnalysisWorkspace({ recording, changeRecording, library }) {
   const [showSwitcher, setShowSwitcher] = React.useState(false);
 
   // ── 템플릿 ────────────────────────────────────────────────────────
-  const [userTemplates, setUserTemplates] = React.useState(() => loadUserTemplates());
+  // 서버(backend/analysis_templates.json)에서 비동기 로드. 마운트 시 한 번만.
+  // 로드 전엔 빈 배열이라 내장 프리셋만 보임 → fetch 끝나면 사용자 템플릿 합류.
+  const [userTemplates, setUserTemplates] = React.useState([]);
   // 삭제된 내장 프리셋 ID. 내장은 코드에 박혀 있어서 다음 페이지 로드 때 다시
   // 등장하지 않게 이 set 으로 필터링. 사용자 관점에선 그냥 "삭제됨".
-  const [deletedBuiltins, setDeletedBuiltins] = React.useState(() => new Set(loadDeletedBuiltins()));
+  const [deletedBuiltins, setDeletedBuiltins] = React.useState(() => new Set());
   const [activeTemplateId, setActiveTemplateId] = React.useState(null);
   const [showSaveTemplate, setShowSaveTemplate] = React.useState(false);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const serverData = await loadAnalysisTemplates();
+      const migrated = await migrateFromLocalStorage(serverData);
+      const final = migrated || serverData;
+      if (cancelled) return;
+      setUserTemplates(final.templates);
+      setDeletedBuiltins(new Set(final.deletedBuiltins));
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const allTemplates = React.useMemo(
     () => [

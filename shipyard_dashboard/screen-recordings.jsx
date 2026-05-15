@@ -1,7 +1,7 @@
 // Screen: 레코딩 관리 (RTDE)
 // New/active recording controls + library of past recordings (file/DB).
 
-function ScreenRecordings({ library, session, startRecording, stopRecording, importRecording, loadRecordingFromPath, openInAnalysis, activeRecId }) {
+function ScreenRecordings({ library, session, startRecording, stopRecording, importRecording, loadRecordingFromPath, deleteRecording, openInAnalysis, activeRecId }) {
   const [source, setSource] = React.useState('all'); // all | file | db
   const [q, setQ] = React.useState('');
   const [showNewDialog, setShowNewDialog] = React.useState(false);
@@ -87,7 +87,8 @@ function ScreenRecordings({ library, session, startRecording, stopRecording, imp
         <RecordingTable
           rows={filtered}
           activeRecId={activeRecId}
-          onOpen={openInAnalysis} />
+          onOpen={openInAnalysis}
+          onDelete={deleteRecording} />
       </div>
 
       {showNewDialog && (
@@ -951,7 +952,24 @@ const btnSecondary = {
   borderRadius: 2,
 };
 
-function RecordingTable({ rows, activeRecId, onOpen }) {
+function RecordingTable({ rows, activeRecId, onOpen, onDelete }) {
+  const [pendingDelete, setPendingDelete] = React.useState(null);  // filename
+  const handleDelete = async (r) => {
+    const filename = r.filename || r.name;
+    if (!filename) return;
+    const ok = window.confirm(
+      `이 레코딩을 정말 삭제할까요?\n\n${filename}\n\nCSV 파일·사이드카·DB 기록이 모두 제거되며 되돌릴 수 없습니다.`
+    );
+    if (!ok) return;
+    setPendingDelete(filename);
+    try {
+      await onDelete(filename);
+    } catch (err) {
+      window.alert(`삭제 실패: ${err.message || err}`);
+    } finally {
+      setPendingDelete(null);
+    }
+  };
   return (
     <div style={{
       background: TOKENS.panel,
@@ -1054,8 +1072,25 @@ function RecordingTable({ rows, activeRecId, onOpen }) {
                 }}>
                 {isActive ? '열림' : '분석 열기'}
               </button>
-              <button style={iconBtn} title="다운로드">⤓</button>
-              <button style={iconBtn} title="삭제">×</button>
+              {r.filename ? (
+                <a href={`/api/recordings/${encodeURIComponent(r.filename)}/download`}
+                   download={r.filename}
+                   title="다운로드"
+                   style={{ ...iconBtn, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+                  ⤓
+                </a>
+              ) : (
+                <button style={{ ...iconBtn, opacity: 0.4, cursor: 'not-allowed' }}
+                        title="파일 없음" disabled>⤓</button>
+              )}
+              <button onClick={() => handleDelete(r)}
+                      disabled={pendingDelete === (r.filename || r.name)}
+                      style={{
+                        ...iconBtn,
+                        opacity: pendingDelete === (r.filename || r.name) ? 0.5 : 1,
+                        cursor: pendingDelete === (r.filename || r.name) ? 'wait' : 'pointer',
+                      }}
+                      title="삭제">×</button>
             </div>
           </div>
         );

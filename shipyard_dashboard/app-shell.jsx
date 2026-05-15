@@ -196,6 +196,28 @@ function AppShell() {
     return await res.json();
   };
 
+  // 레코딩 삭제 — DELETE /api/recordings/{filename}. CSV + 사이드카 + DB 모두 정리.
+  const deleteRecording = async (filename) => {
+    if (!filename) return;
+    const res = await fetch(`/api/recordings/${encodeURIComponent(filename)}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `HTTP ${res.status}`);
+    }
+    // 활성 레코딩이 삭제되면 선택 초기화 — 다음 refresh 가 첫 항목으로 다시 잡음
+    setLibrary(prev => {
+      const next = prev.filter(r => r.filename !== filename);
+      if (activeRecId && !next.some(r => r.id === activeRecId)) {
+        setActiveRecId(next[0]?.id ?? null);
+      }
+      return next;
+    });
+    // 백엔드 신뢰값으로 동기화 (낙관적 업데이트 위에 덮어씀)
+    refreshLibrary();
+  };
+
   // 서버 측 경로에서 CSV 로드 — 브라우저 업로드가 막힌 보안 환경용.
   const loadRecordingFromPath = async ({ path, name, cell, weld_on, note, copy }) => {
     const res = await fetch('/api/recordings/load-path', {
@@ -247,6 +269,7 @@ function AppShell() {
               stopRecording={stopRecording}
               importRecording={importRecording}
               loadRecordingFromPath={loadRecordingFromPath}
+              deleteRecording={deleteRecording}
               openInAnalysis={openInAnalysis}
               activeRecId={activeRecId}
             />

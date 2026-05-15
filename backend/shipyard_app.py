@@ -64,6 +64,7 @@ PROJECT_ROOT = ROOT.parent
 SHIPYARD_DIR = PROJECT_ROOT / "shipyard_dashboard"
 MAPPING_PATH = PROJECT_ROOT / "gp_mapping.json"
 MODBUS_REGISTERS_PATH = PROJECT_ROOT / "modbus_registers.json"
+ANALYSIS_TEMPLATES_PATH = PROJECT_ROOT / "analysis_templates.json"
 # 보안 환경용 — 외부에서 CSV 를 이 폴더에 떨궈두면 UI 에서 골라서 import 가능.
 CSVS_DIR = PROJECT_ROOT / "csvs"
 CSVS_DIR.mkdir(exist_ok=True)
@@ -574,6 +575,45 @@ def api_recordings_download(name: str) -> FileResponse:
     return FileResponse(p, filename=name)
 
 
+@app.delete("/api/recordings/{name}")
+def api_recordings_delete(name: str):
+    """레코딩 삭제 — CSV, 사이드카(.meta.json), DB row 일괄 제거.
+    파일명 sanity 검사로 path traversal 차단. 라이브 레코딩 중인 파일은 거부."""
+    if "/" in name or "\\" in name or name.startswith(".."):
+        raise HTTPException(400, "invalid filename")
+    csv_path = service.recordings_dir / name
+
+    # 안전장치: 현재 라이브 레코딩 중인 파일은 삭제 거부
+    rec_state = service.state().get("recording") or {}
+    active_path = rec_state.get("path") or rec_state.get("filename")
+    if rec_state.get("active") and active_path and Path(active_path).name == name:
+        raise HTTPException(409, "현재 라이브 레코딩 중인 파일입니다. 먼저 중지하세요.")
+
+    removed = {"csv": False, "sidecar": False, "db": False}
+    if csv_path.exists():
+        try:
+            csv_path.unlink()
+            removed["csv"] = True
+        except OSError as exc:
+            raise HTTPException(500, f"CSV 삭제 실패: {exc}")
+    sidecar = _sidecar_path(csv_path)
+    if sidecar.exists():
+        try:
+            sidecar.unlink()
+            removed["sidecar"] = True
+        except OSError:
+            pass  # 사이드카 실패는 silent — CSV+DB 가 1차 안전망
+    try:
+        db = get_db(ROOT)
+        removed["db"] = db.delete_recording_by_filename(name)
+    except Exception as exc:
+        print(f"[delete] DB delete failed (디스크는 정리됨): {exc}")
+
+    if not any(removed.values()):
+        raise HTTPException(404, "recording not found")
+    return {"ok": True, "filename": name, **removed}
+
+
 def _safe_filename_token(token: str) -> str:
     """파일명에 안전한 토큰만 통과. 한글/영문/숫자/일부 기호."""
     if not token:
@@ -856,4 +896,66 @@ def api_modbus_registers_reset():
     """저장본 삭제. 다음 새로고침 때 하드코딩 기본값으로 돌아감."""
     if MODBUS_REGISTERS_PATH.exists():
         MODBUS_REGISTERS_PATH.unlink()
+    return {"reset": True}
+
+
+# ── Analysis templates (파일 영속화) ─────────────────────────────────
+# 분석 워크스페이스에서 사용자가 저장한 차트 프리셋(pinned 채널 + 산점도 X/Y + 모드)
+# 과 "숨긴 내장 프리셋" ID 목록을 한 파일에 묶어 저장.
+# 기존엔 브라우저 localStorage 였는데 PC/브라우저 간 공유 안 돼서 파일 기반으로 이전.
+# 파일 형식: {"templates": [...], "deletedBuiltins": [...]}
+def _load_analysis_templates() -> dict:
+    if not ANALYSIS_TEMPLATES_PATH.exists():
+        return {"templates": [], "deletedBuiltins": []}
+    try:
+        doc = json.loads(ANALYSIS_TEMPLATES_PATH.read_text(encoding="utf-8")) or {}
+    except Exception as exc:
+        print(f"[analysis_templates] parse failed, treating as empty: {exc}")
+        return {"templates": [], "deletedBuiltins": []}
+    templates = doc.get("templates")
+    deleted = doc.get("deletedBuiltins")
+    return {
+        "templates": templates if isinstance(templates, list) else [],
+        "deletedBuiltins": [d for d in (deleted or []) if isinstance(d, str)],
+    }
+
+
+@app.get("/api/analysis/templates")
+def api_analysis_templates_get():
+    return _load_analysis_templates()
+
+
+class AnalysisTemplatesPostRequest(BaseModel):
+    # 둘 다 옵셔널 — 보낸 키만 업데이트 (partial). save 호출이 각각 한쪽만
+    # 갱신하므로 이렇게 해두면 호출자가 다른 쪽 현재 값을 알 필요 없음.
+    templates: Optional[list] = None
+    deletedBuiltins: Optional[list] = None
+
+
+@app.post("/api/analysis/templates")
+def api_analysis_templates_post(req: AnalysisTemplatesPostRequest):
+    current = _load_analysis_templates()
+    if req.templates is not None:
+        if not isinstance(req.templates, list):
+            raise HTTPException(400, "templates must be an array")
+        # 최소 검증 — id/name 둘 다 있는 dict 만 통과 (깨진 항목 차단)
+        current["templates"] = [
+            t for t in req.templates
+            if isinstance(t, dict) and t.get("id") and t.get("name")
+        ]
+    if req.deletedBuiltins is not None:
+        if not isinstance(req.deletedBuiltins, list):
+            raise HTTPException(400, "deletedBuiltins must be an array")
+        current["deletedBuiltins"] = [str(x) for x in req.deletedBuiltins if isinstance(x, str)]
+    ANALYSIS_TEMPLATES_PATH.write_text(
+        json.dumps(current, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return {"saved": True, **current}
+
+
+@app.delete("/api/analysis/templates")
+def api_analysis_templates_reset():
+    """저장본 삭제. 모든 사용자 템플릿이 사라지고 내장 프리셋만 남게 됨."""
+    if ANALYSIS_TEMPLATES_PATH.exists():
+        ANALYSIS_TEMPLATES_PATH.unlink()
     return {"reset": True}

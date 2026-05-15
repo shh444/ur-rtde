@@ -8,10 +8,10 @@
     { "register": "output_double_register_4",  "col": "weldVoltage",      "scale": 1.0, "label": "용접 전압",      "unit": "V" },
     { "register": "output_double_register_5",  "col": "xOffset",          "scale": 1.0, "label": "X 오프셋",       "unit": "mm" },
     { "register": "output_double_register_6",  "col": "zOffset",          "scale": 1.0, "label": "Z 오프셋",       "unit": "mm" },
-    { "register": "output_double_register_7",  "col": "BotRight_Plus",    "scale": 1.0, "label": "BR+",            "unit": "" },
-    { "register": "output_double_register_8",  "col": "TopLeft_Minus",    "scale": 1.0, "label": "TL−",            "unit": "" },
+    { "register": "output_double_register_7",  "col": "BotRight_Plus",    "scale": 1.0, "label": "BR+",            "unit": "A" },
+    { "register": "output_double_register_8",  "col": "TopLeft_Minus",    "scale": 1.0, "label": "TL−",            "unit": "A" },
     { "register": "output_double_register_9",  "col": "StandardCurrent",  "scale": 1.0, "label": "기준 전류",      "unit": "A" },
-    { "register": "output_double_register_10", "col": "allIntegral",      "scale": 1.0, "label": "적분합",         "unit": "" },
+    { "register": "output_double_register_10", "col": "allIntegral",      "scale": 1.0, "label": "적분합",         "unit": "A" },
     { "register": "output_double_register_11", "col": "xUp",              "scale": 1.0, "label": "X Up",           "unit": "" },
     { "register": "output_double_register_12", "col": "xUi",              "scale": 1.0, "label": "X Ui",           "unit": "" },
     { "register": "output_double_register_13", "col": "zUp",              "scale": 1.0, "label": "Z Up",           "unit": "" },
@@ -21,13 +21,13 @@
     { "register": "output_double_register_17", "col": "z",                "scale": 1.0, "label": "Z 위치",         "unit": "mm" },
     { "register": "output_double_register_18", "col": "weldingOnOff",     "scale": 1.0, "label": "용접 ON/OFF",    "unit": "" },
     { "register": "output_double_register_19", "col": "touchOnOff",       "scale": 1.0, "label": "터치 센싱",      "unit": "" },
-    { "register": "output_double_register_20", "col": "ratioT_19",        "scale": 1.0, "label": "Ratio T19",      "unit": "" },
+    { "register": "output_double_register_20", "col": "ratioT_19",        "scale": 1.0, "label": "Ratio T19",      "unit": "%" },
     { "register": "output_double_register_21", "col": "tri_count",        "scale": 1.0, "label": "Tri count",      "unit": "" },
     { "register": "output_double_register_22", "col": "tri_2",            "scale": 1.0, "label": "Tri 2",          "unit": "" },
     { "register": "output_double_register_24", "col": "peak_value",       "scale": 1.0, "label": "Peak 값",        "unit": "" },
     { "register": "output_double_register_25", "col": "Arc_percent",      "scale": 1.0, "label": "아크율",         "unit": "%" },
     { "register": "output_double_register_26", "col": "ARC_T_Plus",       "scale": 1.0, "label": "아크 T+",        "unit": "" },
-    { "register": "output_double_register_30", "col": "BotRight_Plus_VA", "scale": 1.0, "label": "BR+ VA",         "unit": "" },
-    { "register": "output_double_register_31", "col": "TopLeft_Minus_VA", "scale": 1.0, "label": "TL− VA",         "unit": "" }
+    { "register": "output_double_register_30", "col": "BotRight_Plus_VA", "scale": 1.0, "label": "BR+ VA",         "unit": "A" },
+    { "register": "output_double_register_31", "col": "TopLeft_Minus_VA", "scale": 1.0, "label": "TL− VA",         "unit": "A" }
   ]
 }

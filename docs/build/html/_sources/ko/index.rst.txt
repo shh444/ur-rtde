@@ -48,9 +48,13 @@ RTDE Reference Program
        <strong>시작하기</strong>
        <span>설치, 단일 IP 설정, 웹 인터페이스 실행 순서를 확인합니다.</span>
      </a>
+     <a class="quick-card" href="shipyard_guide.html">
+       <strong>조선소 대시보드 가이드</strong>
+       <span>shipyard 8010 — 실시간 모니터링·RTDE·레코딩·분석·GP 매핑 5개 화면을 설명합니다.</span>
+     </a>
      <a class="quick-card" href="dashboard_guide.html">
-       <strong>웹 인터페이스 가이드</strong>
-       <span>패널, 스크린샷, 추천 필드 조합, 모니터링 흐름을 설명합니다.</span>
+       <strong>통합 대시보드 (8008)</strong>
+       <span>레거시 통합 대시보드의 패널, 추천 필드 조합, 모니터링 흐름을 설명합니다.</span>
      </a>
      <a class="quick-card" href="python_api.html">
        <strong>Python API 가이드</strong>
@@ -68,6 +72,7 @@ RTDE Reference Program
 
    getting_started
    rtde_background
+   shipyard_guide
    dashboard_guide
    python_api
    troubleshooting

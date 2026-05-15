@@ -1,0 +1,56 @@
+{
+  "templates": [
+    {
+      "id": "user-1778805891704-svbt",
+      "name": "Z 아크센싱",
+      "description": "스틱아웃 유지하는 아크센싱",
+      "pinned": [
+        "StandardCurrent",
+        "allIntegral"
+      ],
+      "scatterX": "__timer__",
+      "scatterY": "zOffset",
+      "scatterX2": "__timer__",
+      "scatterY2": "z",
+      "detailMode": "overlay",
+      "builtin": false,
+      "createdAt": "2026-05-15T00:44:51.704Z"
+    },
+    {
+      "id": "user-1778806034875-0vaf",
+      "name": "아크센싱 데이터 수집 구간",
+      "description": "PEAK_VALUE가 HIGH 일때 데이터 수집을 함",
+      "pinned": [
+        "peak_value",
+        "Arc_percent"
+      ],
+      "scatterX": "__timer__",
+      "scatterY": "ARC_T_Plus",
+      "scatterX2": "__timer__",
+      "scatterY2": "y",
+      "detailMode": "overlay",
+      "builtin": false,
+      "createdAt": "2026-05-15T00:47:14.875Z"
+    },
+    {
+      "id": "user-1778806669314-7v7b",
+      "name": "X 아크센싱",
+      "description": "센터 찾는 아크센싱",
+      "pinned": [
+        "BotRight_Plus",
+        "TopLeft_Minus"
+      ],
+      "scatterX": "__timer__",
+      "scatterY": "xOffset",
+      "scatterX2": "__timer__",
+      "scatterY2": "y",
+      "detailMode": "overlay",
+      "builtin": false,
+      "createdAt": "2026-05-15T00:57:49.314Z"
+    }
+  ],
+  "deletedBuiltins": [
+    "builtin-arc-sensing-x",
+    "builtin-arc-sensing-y"
+  ]
+}

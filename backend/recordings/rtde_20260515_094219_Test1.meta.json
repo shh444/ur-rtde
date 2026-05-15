@@ -1,0 +1,15 @@
+{
+  "name": "Test1",
+  "cell": "HOR",
+  "weld_on": "아니오",
+  "note": "",
+  "block": "",
+  "path": "",
+  "operator": "",
+  "alarms": 0,
+  "startedAt": "2026-05-15 09:42:19",
+  "started_monotonic": 2748.5,
+  "duration": 31,
+  "samples": 2923,
+  "endedAt": "2026-05-15 09:42:51"
+}
