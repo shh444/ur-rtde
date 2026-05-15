@@ -32,11 +32,11 @@ Shipyard Dashboard — 시작하기
 저장소 받기
 -----------
 
-팀 위키에 적힌 저장소 주소로 ``git clone`` 합니다.
+GitHub 저장소를 ``git clone`` 합니다.
 
 .. code-block:: powershell
 
-   git clone <저장소 주소>
+   git clone https://github.com/shh444/ur-rtde.git
    cd ur-rtde
 
 저장소 안에 미리 만들어둔 설정 3개가 같이 따라옵니다. **이 셋이 동료와 동일한
